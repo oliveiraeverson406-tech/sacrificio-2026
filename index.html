@@ -289,13 +289,16 @@ function render(){
   let cardsHtml = '';
   MONTHS.forEach(m=>{
     const pagos = list.filter(c => c.pagos[m]).length;
+    const faltam = total - pagos;
     const arrecadado = pagos * VALOR_MES;
     const meta = total * VALOR_MES;
+    const restante = meta - arrecadado;
     cardsHtml += `
       <div class="card">
         <div class="label">${MONTH_LABELS[m]}</div>
         <div class="value">R$ ${arrecadado}</div>
-        <div class="label" style="margin-top:2px;">meta R$ ${meta}</div>
+        <div class="label" style="margin-top:2px;">meta R$ ${meta} · faltam R$ ${restante}</div>
+        <div class="label" style="margin-top:4px; color:var(--moss); font-weight:700;">${pagos} contribuíram · ${faltam} faltam</div>
       </div>`;
   });
   const totalGeral = MONTHS.reduce((sum,m)=> sum + list.filter(c=>c.pagos[m]).length * VALOR_MES, 0);
