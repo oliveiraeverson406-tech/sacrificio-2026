@@ -122,7 +122,7 @@
   .add-row button:active{transform:scale(.97);}
 
   .col-heads{
-    display:grid; grid-template-columns:1fr 34px 34px 34px 30px;
+    display:grid; grid-template-columns:1fr 34px 34px 34px 26px 26px;
     gap:6px; padding:0 4px 6px; font-size:11px; color:#8A8066;
     text-transform:uppercase; letter-spacing:.04em; font-weight:600; text-align:center;
   }
@@ -130,7 +130,7 @@
 
   ul.contrib-list{list-style:none; margin:0; padding:0;}
   .contrib-list li{
-    display:grid; grid-template-columns:1fr 34px 34px 34px 30px;
+    display:grid; grid-template-columns:1fr 34px 34px 34px 26px 26px;
     align-items:center; gap:6px;
     background:#fff; border:1px solid var(--line); border-radius:8px;
     padding:9px 6px 9px 12px; margin-bottom:7px;
@@ -146,10 +146,12 @@
   .chk.checked{
     background:var(--gold); border-color:var(--gold); color:#fff; font-weight:700;
   }
-  .del-btn{
+  .del-btn, .edit-btn{
     width:26px; height:26px; border-radius:50%; border:none; background:transparent;
-    color:var(--terra); font-size:16px; cursor:pointer; margin:0 auto;
+    font-size:14px; cursor:pointer; margin:0 auto; display:flex; align-items:center; justify-content:center;
   }
+  .del-btn{color:var(--terra);}
+  .edit-btn{color:var(--moss);}
 
   .empty{
     text-align:center; padding:30px 10px; color:#8A8066; font-size:14px;
@@ -203,7 +205,7 @@
   </div>
 
   <div class="col-heads">
-    <span>Nome</span><span>Jun</span><span>Jul</span><span>Ago</span><span></span>
+    <span>Nome</span><span>Jun</span><span>Jul</span><span>Ago</span><span></span><span></span>
   </div>
 
   <ul class="contrib-list" id="list"></ul>
@@ -320,7 +322,8 @@ function render(){
       li.innerHTML = `
         <div class="name" title="${escapeHtml(c.nome)}">${escapeHtml(c.nome)}</div>
         ${chks}
-        <button class="del-btn" data-id="${c.id}">✕</button>
+        <button class="edit-btn" data-id="${c.id}" aria-label="Editar nome">✎</button>
+        <button class="del-btn" data-id="${c.id}" aria-label="Remover">✕</button>
       `;
       listEl.appendChild(li);
     });
@@ -368,6 +371,20 @@ document.getElementById('list').addEventListener('click', e=>{
       c.pagos[chk.dataset.mes] = !c.pagos[chk.dataset.mes];
       save();
       render();
+    }
+    return;
+  }
+  const edit = e.target.closest('.edit-btn');
+  if(edit){
+    const c = data.contribuintes.find(x=>x.id===edit.dataset.id);
+    if(c){
+      const novoNome = prompt('Corrigir nome:', c.nome);
+      if(novoNome !== null && novoNome.trim()){
+        c.nome = novoNome.trim();
+        save();
+        render();
+        showToast('Nome atualizado');
+      }
     }
     return;
   }
