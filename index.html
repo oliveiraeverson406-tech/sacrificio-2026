@@ -138,6 +138,13 @@
   .contrib-list .name{
     font-size:14.5px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
   }
+  .contrib-list .name-wrap{overflow:hidden;}
+  .contrib-list .obs{
+    font-size:11px; color:#96835A; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    margin-top:1px; font-style:italic;
+  }
+  .contrib-list li.isento{background:var(--parchment-2);}
+  .contrib-list li.isento .chk{opacity:0.3; pointer-events:none;}
   .chk{
     width:30px; height:30px; border-radius:6px; border:1.5px solid var(--line);
     background:#F7F4EA; display:flex; align-items:center; justify-content:center;
@@ -267,15 +274,17 @@ function render(){
   ensureData();
   const list = sortedContribuintes();
   const total = list.length;
+  const monetarios = list.filter(c => !c.isento);
+  const totalMonetario = monetarios.length;
 
   // Stairs
   const stairsEl = document.getElementById('stairs');
   stairsEl.innerHTML = '';
   MONTHS.forEach(m=>{
-    const pagos = list.filter(c => c.pagos[m]).length;
-    const pct = total ? Math.round((pagos/total)*100) : 0;
+    const pagos = monetarios.filter(c => c.pagos[m]).length;
+    const pct = totalMonetario ? Math.round((pagos/totalMonetario)*100) : 0;
     const step = document.createElement('div');
-    step.className = 'step' + (total && pagos===total ? ' done' : '');
+    step.className = 'step' + (totalMonetario && pagos===totalMonetario ? ' done' : '');
     step.innerHTML = `
       <div class="label">${MONTH_LABELS[m]}</div>
       <div class="pct">${pct}%</div>
@@ -288,10 +297,10 @@ function render(){
   const summaryEl = document.getElementById('summary');
   let cardsHtml = '';
   MONTHS.forEach(m=>{
-    const pagos = list.filter(c => c.pagos[m]).length;
-    const faltam = total - pagos;
+    const pagos = monetarios.filter(c => c.pagos[m]).length;
+    const faltam = totalMonetario - pagos;
     const arrecadado = pagos * VALOR_MES;
-    const meta = total * VALOR_MES;
+    const meta = totalMonetario * VALOR_MES;
     const restante = meta - arrecadado;
     cardsHtml += `
       <div class="card">
@@ -301,8 +310,8 @@ function render(){
         <div class="label" style="margin-top:4px; color:var(--moss); font-weight:700;">${pagos} contribuíram · ${faltam} faltam</div>
       </div>`;
   });
-  const totalGeral = MONTHS.reduce((sum,m)=> sum + list.filter(c=>c.pagos[m]).length * VALOR_MES, 0);
-  const metaGeral = total * VALOR_MES * 3;
+  const totalGeral = MONTHS.reduce((sum,m)=> sum + monetarios.filter(c=>c.pagos[m]).length * VALOR_MES, 0);
+  const metaGeral = totalMonetario * VALOR_MES * 3;
   cardsHtml += `
     <div class="card total">
       <div class="label">Total geral (3 meses)</div>
@@ -321,11 +330,16 @@ function render(){
     emptyEl.style.display = 'none';
     list.forEach(c=>{
       const li = document.createElement('li');
+      li.className = c.isento ? 'isento' : '';
       const chks = MONTHS.map(m => `<div class="chk ${c.pagos[m]?'checked':''}" data-id="${c.id}" data-mes="${m}">${c.pagos[m]?'✓':''}</div>`).join('');
+      const obsHtml = c.obs ? `<div class="obs">${escapeHtml(c.obs)}${c.isento ? ' · isento em dinheiro' : ''}</div>` : (c.isento ? `<div class="obs">isento em dinheiro</div>` : '');
       li.innerHTML = `
-        <div class="name" title="${escapeHtml(c.nome)}">${escapeHtml(c.nome)}</div>
+        <div class="name-wrap">
+          <div class="name" title="${escapeHtml(c.nome)}">${escapeHtml(c.nome)}</div>
+          ${obsHtml}
+        </div>
         ${chks}
-        <button class="edit-btn" data-id="${c.id}" aria-label="Editar nome">✎</button>
+        <button class="edit-btn" data-id="${c.id}" aria-label="Editar">✎</button>
         <button class="del-btn" data-id="${c.id}" aria-label="Remover">✕</button>
       `;
       listEl.appendChild(li);
@@ -357,7 +371,7 @@ function addContribuinte(){
   const input = document.getElementById('new-name');
   const nome = input.value.trim();
   if(!nome) return;
-  data.contribuintes.push({ id: uid(), nome, pagos:{jun:false,jul:false,ago:false} });
+  data.contribuintes.push({ id: uid(), nome, obs:'', isento:false, pagos:{jun:false,jul:false,ago:false} });
   save();
   input.value = '';
   render();
@@ -384,10 +398,17 @@ document.getElementById('list').addEventListener('click', e=>{
       const novoNome = prompt('Corrigir nome:', c.nome);
       if(novoNome !== null && novoNome.trim()){
         c.nome = novoNome.trim();
-        save();
-        render();
-        showToast('Nome atualizado');
+      } else if(novoNome === null){
+        return; // cancelou tudo
       }
+      const novaObs = prompt('Observação (opcional, ex: vai doar cimento). Deixe em branco pra remover:', c.obs || '');
+      if(novaObs !== null){
+        c.obs = novaObs.trim();
+      }
+      c.isento = confirm('Marcar como isento da contribuição em dinheiro?\n(a pessoa continua na lista, mas some das contas de R$)\n\nOK = isento · Cancelar = participa do dinheiro normalmente');
+      save();
+      render();
+      showToast('Contribuinte atualizado');
     }
     return;
   }
