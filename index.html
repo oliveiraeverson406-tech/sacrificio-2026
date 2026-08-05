@@ -100,6 +100,29 @@
   .card.total .label{color:#CFE0CB;}
   .card.total .value{color:#fff;}
 
+  /* Lembrete de backup */
+  .backup-alert{
+    margin:14px 20px 0;
+    background:#F7E7C6;
+    border:1px solid var(--gold);
+    color:#5C4419;
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:12.5px;
+    font-weight:600;
+    align-items:center;
+    gap:8px;
+    line-height:1.4;
+  }
+  .backup-alert.urgent{
+    background:#F3DCD3;
+    border-color:var(--terra);
+    color:#6B2E1F;
+  }
+  .backup-alert .dot{
+    width:8px; height:8px; border-radius:50%; background:var(--terra); flex:0 0 auto;
+  }
+
   section.list-wrap{padding:18px 20px 0;}
   .list-head{
     display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px;
@@ -143,7 +166,7 @@
     font-size:11px; color:#96835A; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
     margin-top:1px; font-style:italic;
   }
-  .contrib-list li.isento{background:.contrib-list li.isento:var(--parchment-2);}
+  .contrib-list li.isento{background:var(--parchment-2);}
   .contrib-list li.isento .chk{opacity:0.3; pointer-events:none;}
   .chk{
     width:30px; height:30px; border-radius:6px; border:1.5px solid var(--line);
@@ -170,10 +193,15 @@
   footer button{
     flex:1; padding:12px; border-radius:9px; border:1px solid var(--stone-dark);
     background:transparent; color:var(--stone-dark); font-size:13.5px; font-weight:600;
-    cursor:pointer;
+    cursor:pointer; position:relative;
   }
   footer button.primary{background:var(--stone-dark); color:var(--parchment);}
   footer input[type=file]{display:none;}
+
+  .badge-dot{
+    position:absolute; top:-5px; right:-5px; width:11px; height:11px; border-radius:50%;
+    background:var(--terra); border:2px solid var(--parchment); display:none;
+  }
 
   .toast{
     position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
@@ -200,6 +228,8 @@
 
 <div class="summary" id="summary"></div>
 
+<div class="backup-alert" id="backup-alert" style="display:none;"></div>
+
 <section class="list-wrap">
   <div class="list-head">
     <h2>Contribuintes</h2>
@@ -220,7 +250,7 @@
 </section>
 
 <footer>
-  <button id="export-btn">⬇ Exportar backup</button>
+  <button id="export-btn">⬇ Exportar backup<span class="badge-dot" id="badge-dot"></span></button>
   <button class="primary" id="import-btn">⬆ Importar backup</button>
   <input type="file" id="file-input" accept="application/json">
 </footer>
@@ -243,12 +273,13 @@ function load(){
       if(parsed && Array.isArray(parsed.contribuintes)) return parsed;
     }
   }catch(e){}
-  return { contribuintes: [] };
+  return { contribuintes: [], meta: { lastBackup: null, changeCount: 0 } };
 }
 
 function ensureData(){
   if(!data || typeof data !== 'object') data = { contribuintes: [] };
   if(!Array.isArray(data.contribuintes)) data.contribuintes = [];
+  if(!data.meta || typeof data.meta !== 'object') data.meta = { lastBackup: null, changeCount: 0 };
 }
 
 function save(){
@@ -259,6 +290,47 @@ function save(){
     // armazenamento indisponível neste ambiente — os dados continuam
     // válidos em memória durante esta sessão, mas não persistirão.
   }
+}
+
+function markDirty(){
+  ensureData();
+  data.meta.changeCount = (data.meta.changeCount || 0) + 1;
+}
+
+function formatDate(ts){
+  return new Date(ts).toLocaleDateString('pt-BR');
+}
+
+function updateBackupBanner(){
+  ensureData();
+  const banner = document.getElementById('backup-alert');
+  const badge = document.getElementById('badge-dot');
+  const count = data.meta.changeCount || 0;
+
+  if(count === 0){
+    banner.style.display = 'none';
+    if(badge) badge.style.display = 'none';
+    return;
+  }
+  if(badge) badge.style.display = 'block';
+
+  const last = data.meta.lastBackup;
+  let msg, urgent = false;
+  if(!last){
+    msg = `Você ainda não exportou nenhum backup. ${count} alteraç${count>1?'ões':'ão'} podem se perder.`;
+    urgent = true;
+  } else {
+    const days = Math.floor((Date.now() - last) / 86400000);
+    if(days >= 3){
+      msg = `Faz ${days} dias sem backup · ${count} alteraç${count>1?'ões':'ão'} não salva${count>1?'s':''}. Exporte agora.`;
+      urgent = true;
+    } else {
+      msg = `${count} alteraç${count>1?'ões':'ão'} desde o último backup (${formatDate(last)}). Exporte pra garantir.`;
+    }
+  }
+  banner.innerHTML = `<span class="dot"></span>${msg}`;
+  banner.style.display = 'flex';
+  banner.className = 'backup-alert' + (urgent ? ' urgent' : '');
 }
 
 function uid(){
@@ -345,6 +417,8 @@ function render(){
       listEl.appendChild(li);
     });
   }
+
+  updateBackupBanner();
 }
 
 function escapeHtml(str){
@@ -372,6 +446,7 @@ function addContribuinte(){
   const nome = input.value.trim();
   if(!nome) return;
   data.contribuintes.push({ id: uid(), nome, obs:'', isento:false, pagos:{jun:false,jul:false,ago:false} });
+  markDirty();
   save();
   input.value = '';
   render();
@@ -386,6 +461,7 @@ document.getElementById('list').addEventListener('click', e=>{
     const c = data.contribuintes.find(x=>x.id===chk.dataset.id);
     if(c){
       c.pagos[chk.dataset.mes] = !c.pagos[chk.dataset.mes];
+      markDirty();
       save();
       render();
     }
@@ -406,6 +482,7 @@ document.getElementById('list').addEventListener('click', e=>{
         c.obs = novaObs.trim();
       }
       c.isento = confirm('Marcar como isento da contribuição em dinheiro?\n(a pessoa continua na lista, mas some das contas de R$)\n\nOK = isento · Cancelar = participa do dinheiro normalmente');
+      markDirty();
       save();
       render();
       showToast('Contribuinte atualizado');
@@ -417,6 +494,7 @@ document.getElementById('list').addEventListener('click', e=>{
     const c = data.contribuintes.find(x=>x.id===del.dataset.id);
     if(c && confirm(`Remover "${c.nome}" da lista?`)){
       data.contribuintes = data.contribuintes.filter(x=>x.id!==del.dataset.id);
+      markDirty();
       save();
       render();
       showToast('Contribuinte removido');
@@ -426,6 +504,7 @@ document.getElementById('list').addEventListener('click', e=>{
 
 // Backup export
 document.getElementById('export-btn').addEventListener('click', ()=>{
+  ensureData();
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -436,6 +515,10 @@ document.getElementById('export-btn').addEventListener('click', ()=>{
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+  data.meta.lastBackup = Date.now();
+  data.meta.changeCount = 0;
+  save();
+  updateBackupBanner();
   showToast('Backup exportado');
 });
 
@@ -453,6 +536,9 @@ document.getElementById('file-input').addEventListener('change', e=>{
       if(!parsed.contribuintes || !Array.isArray(parsed.contribuintes)) throw new Error('formato inválido');
       if(confirm('Importar este backup vai substituir os dados atuais. Continuar?')){
         data = parsed;
+        ensureData();
+        data.meta.lastBackup = Date.now();
+        data.meta.changeCount = 0;
         save();
         render();
         showToast('Backup importado');
