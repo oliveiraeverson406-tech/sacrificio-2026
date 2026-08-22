@@ -78,6 +78,30 @@
     .item-desp .v {font-weight: 900; color: #A83232; text-align: right; font-size: 15px;}
     .sem {text-align: center; color: #999; padding: 16px; font-weight: 600; font-size: 14px;}
 
+    /* 💾 ÁREA DE BACKUP */
+    .backup-area {
+      margin: 15px 12px;
+      padding: 15px;
+      background: #fff8e8;
+      border-radius: 8px;
+      border: 2px dashed #E8B864;
+    }
+    .backup-area h4 {font-size: 15px; font-weight: 900; margin-bottom: 10px; color: #856404;}
+    .backup-botoes {display: flex; gap: 8px; flex-wrap: wrap;}
+    .backup-botoes button {flex: 1; min-width: 120px;}
+    .btn-restaurar {background: #6c5ce7;}
+    #arquivoBackup {display: none;}
+    .label-arquivo {
+      flex: 2;
+      background: white;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+    }
+
     .botoes-final {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: white; padding: 10px 12px;
@@ -146,6 +170,17 @@
 
 <div class="total-geral" id="total-geral">TOTAL GERAL · R$ 0 / R$ 5.400</div>
 
+<!-- 💾 ÁREA DE BACKUP — AQUI VOCÊ SALVA E RECUPERA! -->
+<div class="backup-area">
+  <h4>💾 SALVAR E RECUPERAR</h4>
+  <div class="backup-botoes">
+    <button class="btn-exportar" onclick="exportarDados()">📤 Baixar Backup</button>
+    <input type="file" id="arquivoBackup" accept=".json" onchange="selecionouArquivo(this)">
+    <label for="arquivoBackup" class="label-arquivo" id="nomeArquivo">📂 Escolher arquivo...</label>
+    <button class="btn-restaurar" onclick="restaurarBackup()" id="botaoRestaurar" disabled>📥 Restaurar</button>
+  </div>
+</div>
+
 <div class="container">
   <div class="titulo-lista">
     <h2>Contribuintes</h2>
@@ -207,6 +242,7 @@ const MESES = ['jun','jul','ago'];
 
 let pessoas = [];
 let despesas = [];
+let arquivoSelecionado = null;
 
 const baseDados = [
   {nome:"Alfredo de Souza",jun:false,jul:false,ago:false,isento:false},
@@ -249,7 +285,6 @@ const baseDados = [
   {nome:"Zébedeu Pereira",jun:true,jul:true,ago:false,isento:false}
 ];
 
-// 🔤 FUNÇÃO DE ORDENAÇÃO ALFABÉTICA
 function ordenarAlfabetica(lista) {
   return lista.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
 }
@@ -313,7 +348,7 @@ function atualizarTudo(){
 }
 
 function montarLista(){
-  ordenarAlfabetica(pessoas); // 🔤 SEMPRE ORDENA ANTES DE MOSTRAR
+  ordenarAlfabetica(pessoas);
   const div = document.getElementById('listaPessoas'); div.innerHTML = '';
   pessoas.forEach((p, i)=>{
     const linha = document.createElement('div');
@@ -367,20 +402,52 @@ function montarDespesas(){
   atualizarTudo();
 }
 
-window.baixarArquivo = function(){
-  alert('✅ Salvo automaticamente! Use o botão Backup para guardar cópia.');
-};
+// 💾 BAIXAR BACKUP
 window.exportarDados = function(){
   const tudo = {pessoas, despesas, data: new Date().toLocaleString('pt-BR')};
   const arq = document.createElement('a');
   arq.href = URL.createObjectURL(new Blob([JSON.stringify(tudo,null,2)], {type:'application/json'}));
   arq.download = 'sacrificio-2026-backup.json';
   arq.click();
-  alert('✅ Backup baixado!');
+  alert('✅ Backup baixado! Guarde bem esse arquivo!');
 };
 
-carregarDados();
-</script>
+// 📂 ESCOLHER ARQUIVO
+window.selecionouArquivo = function(input){
+  if(input.files.length > 0){
+    arquivoSelecionado = input.files[0];
+    document.getElementById('nomeArquivo').textContent = '✅ ' + arquivoSelecionado.name;
+    document.getElementById('botaoRestaurar').disabled = false;
+  }
+};
 
-</body>
-</html>
+// 📥 RESTAURAR BACKUP
+window.restaurarBackup = function(){
+  if(!arquivoSelecionado) return alert('Escolha um arquivo primeiro!');
+  if(!confirm('⚠️ ATENÇÃO: Vai SUBSTITUIR todos os dados atuais! Tem certeza?')) return;
+
+  const ler = new FileReader();
+  ler.onload = function(e){
+    try {
+      const dados = JSON.parse(e.target.result);
+      if(!dados.pessoas) throw new Error('Arquivo inválido!');
+      pessoas = ordenarAlfabetica(dados.pessoas);
+      despesas = dados.despesas || [];
+      salvarDados();
+      montarLista();
+      montarDespesas();
+      atualizarTudo();
+      alert('✅ Dados RECUPERADOS com sucesso!');
+      // Limpa seleção
+      arquivoSelecionado = null;
+      document.getElementById('nomeArquivo').textContent = '📂 Escolher arquivo...';
+      document.getElementById('botaoRestaurar').disabled = true;
+    } catch(erro) {
+      alert('❌ Erro: arquivo inválido ou corrompido!');
+    }
+  };
+  ler.readAsText(arquivoSelecionado);
+};
+
+window.baixarArquivo = function(){
+  alert('✅ Salvo automaticamente! Use "Baixar Backup" para guardar cópi
