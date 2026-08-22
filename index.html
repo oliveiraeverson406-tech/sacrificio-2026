@@ -8,7 +8,6 @@
     * {margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif;}
     body {background-color: #F5F0E1; color:#333; padding-bottom:75px; font-size: 15px;}
 
-    /* 🔝 CABEÇALHO */
     header {
       background-color: #3A2E24;
       color: white;
@@ -19,7 +18,6 @@
     header .sub {font-size: 15px; opacity: 0.9;}
     .linha-dourada {height: 3px; background: linear-gradient(90deg, #C89B3C, #E8B864, #C89B3C); margin-top: 10px;}
 
-    /* 📊 BARRAS */
     .barras {display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px;}
     .barra-mes {text-align: center;}
     .barra-fundo {
@@ -30,31 +28,26 @@
     .barra-texto {position: absolute; top: 4px; left: 0; right: 0; color: white; font-size: 13px; font-weight: 900; z-index: 2;}
     .barra-porcentagem {background-color: #C89B3C; padding: 4px 0; font-weight: 900; font-size: 15px; color: #222; position: relative; z-index: 1; transition: height 0.3s ease; min-height: 24px;}
 
-    /* 📈 CARTÕES */
     .cartoes {display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; padding: 0 12px 12px;}
     .cartao {background: white; border-radius: 10px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);}
     .cartao h3 {font-size: 14px; color: #666; font-weight: 800;}
     .cartao .valor {font-size: 24px; font-weight: 900; margin: 3px 0 6px;}
     .cartao p {font-size: 13px; color: #444; margin: 4px 0; font-weight: 700; line-height: 1.4;}
 
-    /* ✅ TOTAL GERAL */
     .total-geral {background-color: #406343; color: white; margin: 0 12px 16px; padding: 12px 16px; border-radius: 8px; font-size: 18px; font-weight: 900;}
 
-    /* 📋 LISTA CONTRIBUINTES */
     .container {padding: 0 12px;}
     .titulo-lista {display: flex; justify-content: space-between; align-items: center; font-size: 20px; margin-bottom: 10px; font-weight: 900;}
     .add-area {display: flex; gap: 8px; margin-bottom: 12px;}
     .add-area input {flex: 1; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px;}
     button {background-color: #406343; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 15px; cursor: pointer; font-weight: 800;}
 
-    /* TABELA */
     .cab-tabela {display: grid; grid-template-columns: 3fr 50px 50px 50px 60px; padding: 6px 8px; font-weight: 900; color: #444; font-size: 14px;}
     .linha {display: grid; grid-template-columns: 3fr 50px 50px 50px 60px; align-items: center; background: white; padding: 10px 8px; border-radius: 6px; margin-bottom: 6px; border: 1px solid #E5DDCB;}
     .linha.isento {background: #F0EBD8; color: #666;}
     .linha .nome {font-size: 15px; font-weight: 900;}
     .linha .sub {font-size: 11px; color: #888; font-weight: 600;}
 
-    /* ✅ QUADRADOS */
     .quadrado {
       width: 28px; height: 28px; border: 2px solid #D4C9AE; border-radius: 4px;
       background: #F8F4E9; margin: 0 auto; cursor: pointer;
@@ -65,7 +58,6 @@
     .acoes {display: flex; justify-content: center; gap: 4px;}
     .btn-excluir {background: none; border: none; font-size: 16px; padding: 2px; cursor: pointer; color: #A83232; font-weight: bold;}
 
-    /* 💰 CAIXA E COMPRAS */
     .caixa {margin-top: 24px; padding-top: 16px; border-top: 2px dashed #C4B89C;}
     .caixa-titulo {display: flex; justify-content: space-between; align-items: center; font-size: 18px; margin-bottom: 12px; font-weight: 900;}
     .caixa-cards {display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;}
@@ -86,7 +78,6 @@
     .item-desp .v {font-weight: 900; color: #A83232; text-align: right; font-size: 15px;}
     .sem {text-align: center; color: #999; padding: 16px; font-weight: 600; font-size: 14px;}
 
-    /* 💾 BOTÕES */
     .botoes-final {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: white; padding: 10px 12px;
@@ -111,7 +102,6 @@
   <div class="linha-dourada"></div>
 </header>
 
-<!-- 📊 BARRAS -->
 <div class="barras">
   <div class="barra-mes">
     <div class="barra-fundo">
@@ -133,7 +123,6 @@
   </div>
 </div>
 
-<!-- 📈 CARTÕES -->
 <div class="cartoes">
   <div class="cartao">
     <h3>JUNHO</h3>
@@ -174,7 +163,6 @@
 
   <div id="listaPessoas"></div>
 
-  <!-- 💰 CAIXA · COMPRAS -->
   <div class="caixa">
     <div class="caixa-titulo">
       <h2>Caixa · Material Comprado</h2>
@@ -207,7 +195,6 @@
   </div>
 </div>
 
-<!-- 💾 BOTÕES -->
 <div class="botoes-final">
   <button class="btn-salvar" onclick="baixarArquivo()">💾 Salvar / Baixar</button>
   <button class="btn-exportar" onclick="exportarDados()">📤 Backup</button>
@@ -235,6 +222,7 @@ const baseDados = [
   {nome:"Everson Oliveira",jun:false,jul:false,ago:false,isento:false},
   {nome:"Gemima Dutra",jun:false,jul:false,ago:false,isento:false},
   {nome:"Ianezza Oliveira",jun:false,jul:false,ago:false,isento:false},
+  {nome:"Jander Salgado",jun:false,jul:false,ago:false,isento:false},
   {nome:"Jairo Gomes",jun:true,jul:true,ago:true,isento:true,obs:"isento em dinheiro"},
   {nome:"Joana Souza",jun:true,jul:true,ago:false,isento:false},
   {nome:"Jonas de Araújo",jun:false,jul:false,ago:false,isento:false},
@@ -261,15 +249,20 @@ const baseDados = [
   {nome:"Zébedeu Pereira",jun:true,jul:true,ago:false,isento:false}
 ];
 
+// 🔤 FUNÇÃO DE ORDENAÇÃO ALFABÉTICA
+function ordenarAlfabetica(lista) {
+  return lista.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+}
+
 function carregarDados(){
   const s = localStorage.getItem('pessoas');
   const d = localStorage.getItem('despesas');
-  pessoas = s ? JSON.parse(s) : [...baseDados];
+  pessoas = s ? ordenarAlfabetica(JSON.parse(s)) : ordenarAlfabetica([...baseDados]);
   despesas = d ? JSON.parse(d) : [];
   salvarDados(); montarLista(); montarDespesas(); atualizarTudo();
 }
 function salvarDados(){
-  localStorage.setItem('pessoas', JSON.stringify(pessoas));
+  localStorage.setItem('pessoas', JSON.stringify(ordenarAlfabetica(pessoas)));
   localStorage.setItem('despesas', JSON.stringify(despesas));
 }
 
@@ -320,6 +313,7 @@ function atualizarTudo(){
 }
 
 function montarLista(){
+  ordenarAlfabetica(pessoas); // 🔤 SEMPRE ORDENA ANTES DE MOSTRAR
   const div = document.getElementById('listaPessoas'); div.innerHTML = '';
   pessoas.forEach((p, i)=>{
     const linha = document.createElement('div');
