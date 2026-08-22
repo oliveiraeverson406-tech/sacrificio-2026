@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campanha 2026 — Sacrifício</title>
+  <style>
+    * {margin:0; padding:0; box-sizing:border-box; font-family: sans-serif;}
+    body {background:#F5F0E1; padding-bottom:40px;}
+
+    /* CABEÇALHO */
+    header {background:#3A2E24; color:white; padding:20px;}
+    header h2 {font-size:15px; color:#E8B864;}
+    header h1 {font-size:28px; margin:5px 0;}
+    .linha {height:3px; background:linear-gradient(90deg,#C89B3C,#E8B864,#C89B3C); margin-top:10px;}
+
+    /* MESES */
+    .meses {display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; padding:15px;}
+    .mes {background:white; border-radius:10px; padding:12px;}
+    .mes h3 {font-size:14px; color:#666;}
+    .mes .valor {font-size:24px; font-weight:bold; margin:4px 0;}
+    .mes p {font-size:12px; color:#555;}
+
+    /* TOTAL GERAL */
+    .total {background:#406343; color:white; margin:0 15px 15px; padding:15px; border-radius:10px; font-size:20px; font-weight:bold;}
+
+    /* LISTA */
+    .container {padding:0 15px;}
+    .topo-lista {display:flex; justify-content:space-between; align-items:center; margin:15px 0; font-size:20px;}
+    .add-nome {display:flex; gap:8px; margin-bottom:10px;}
+    .add-nome input {flex:1; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:16px;}
+    button {background:#406343; color:white; border:none; padding:10px 15px; border-radius:6px; font-size:16px; cursor:pointer;}
+
+    /* CABEÇALHO TABELA */
+    .cab-tabela {display:grid; grid-template-columns:3fr 50px 50px 50px 40px; padding:8px; font-weight:bold; color:#666;}
+
+    /* LINHA CADA PESSOA — AQUI ESTÃO OS QUADRADOS! */
+    .linha {display:grid; grid-template-columns:3fr 50px 50px 50px 40px; align-items:center; background:white; padding:10px; border-radius:6px; margin-bottom:6px; border:1px solid #ddd;}
+    .linha.isento {background:#f0f0f0; color:#666;}
+
+    /* ✅ QUADRADOS DE MARCAÇÃO — VISÍVEIS! */
+    .quadrado {
+      width:28px; height:28px; border:2px solid #999; border-radius:4px;
+      background:#fff; margin:0 auto; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; font-weight:bold; color:transparent;
+    }
+    .quadrado.checado {background:#C89B3C; border-color:#9a7620; color:white;}
+
+    .excluir {background:none; color:#a33; font-size:18px; padding:0;}
+
+    /* CAIXA E DESPESAS */
+    .caixa {margin-top:30px; padding-top:20px; border-top:2px dashed #ccc;}
+    .caixa h2 {display:flex; justify-content:space-between;}
+    .caixas-valores {display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:10px 0;}
+    .card {background:white; padding:12px; border-radius:8px;}
+    .card .rotulo {font-size:13px; color:#666;}
+    .card .v-bruto {font-size:22px; font-weight:bold;}
+    .card .v-gasto {font-size:22px; font-weight:bold; color:#a33;}
+    .liquido {background:#3A2E24; color:white; padding:15px; border-radius:8px; margin:10px 0;}
+    .liquido .rotulo {color:#E8B864; font-size:14px;}
+    .liquido .valor {font-size:26px; font-weight:bold;}
+
+    .desp {display:flex; flex-direction:column; gap:8px; margin:15px 0;}
+    .desp input {padding:12px; border:1px solid #ddd; border-radius:6px; font-size:16px;}
+    .btn-mais {width:100%; font-size:20px; padding:8px;}
+
+    .item-desp {display:grid; grid-template-columns:3fr 1fr auto; background:white; padding:10px; border-radius:6px; margin:6px 0;}
+    .item-desp .v {color:#a33; font-weight:bold; text-align:right;}
+    .sem {color:#999; text-align:center; padding:20px;}
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>CAMPANHA 2026</h2>
+  <h1>Sacrifício</h1>
+  <p>Pró-escada de entrada · R$ 50 por mês</p>
+  <div class="linha"></div>
+</header>
+
+<div class="meses">
+  <div class="mes">
+    <h3>JUNHO</h3>
+    <div class="valor">R$ 1.200</div>
+    <p>Meta: R$ 1.800</p>
+  </div>
+  <div class="mes">
+    <h3>JULHO</h3>
+    <div class="valor">R$ 1.000</div>
+    <p>Meta: R$ 1.800</p>
+  </div>
+  <div class="mes">
+    <h3>AGOSTO</h3>
+    <div class="valor">R$ 400</div>
+    <p>Meta: R$ 1.800</p>
+  </div>
+</div>
+
+<div class="total">TOTAL GERAL: R$ 2.600 / R$ 5.400</div>
+
+<div class="container">
+  <div class="topo-lista">
+    <h2>Contribuintes</h2>
+    <span id="qtd">38 pessoas</span>
+  </div>
+
+  <div class="add-nome">
+    <input type="text" id="nomeNovo" placeholder="Nome do contribuinte">
+    <button onclick="adicionar()">Adicionar</button>
+  </div>
+
+  <div class="cab-tabela">
+    <span>NOME</span><span>JUN</span><span>JUL</span><span>AGO</span><span></span>
+  </div>
+
+  <div id="lista"></div>
+
+  <!-- 💰 CAIXA E DESPESAS -->
+  <div class="caixa">
+    <h2>Caixa · Despesas <span id="itens">0 itens</span></h2>
+    
+    <div class="caixas-valores">
+      <div class="card">
+        <div class="rotulo">Bruto</div>
+        <div class="v-bruto" id="bruto">R$ 2.600,00</div>
+      </div>
+      <div class="card">
+        <div class="rotulo">Gasto</div>
+        <div class="v-gasto" id="gasto">R$ 0,00</div>
+      </div>
+    </div>
+
+    <div class="liquido">
+      <div class="rotulo">Líquido em caixa</div>
+      <div class="valor" id="liquido">R$ 2.600,00</div>
+    </div>
+
+    <div class="desp">
+      <input type="text" id="nomeDesp" placeholder="Nome do item">
+      <input type="number" step="0.01" id="valorDesp" placeholder="Valor">
+      <button class="btn-mais" onclick="novaDespesa()">+</button>
+    </div>
+
+    <div id="listaDesp"></div>
+  </div>
+</div>
+
+<script>
+const VALOR_TOTAL = 2600;
+let pessoas = [];
+let gastos = [];
+
+const base = [
+  {nome:"Alfredo de Souza",jun:false,jul:false,ago:false,isento:false},
+  {nome:"Amanda de Souza",jun:false,jul:false,ago:false,isento:false},
+  {nome:"Benedito Gama",jun:true,jul:true,ago:false,isento:false},
+  {nome:"Celma Dutra",jun:true,jul:true,ago:false,isento:false},
+  {nome:"Cléo Nogueira",jun:false,jul:false,ago:false,isento:false},
+  {nome:"Daniele Ferreira",jun:false,jul:false,ago:false,isento:false},
+  {nome:"Dariane Carneiro",jun:true,jul:true,ago:false,isento:false},
+  {nome:"Durvalina Gomes",jun:true,jul:true,ago:false,isento:false},
+  {nome:"Edina dos Reis",jun:true,jul:true,ago:true,isento:false},
+  {nome:"Elzer Gama",jun:true,jul:true,ago:false,isento:false},
+  {nome:"Everson Oliveira",jun:false,jul:false,ago:false,isento:false},
+  {nome:"Gemima Dutra",jun:false,jul:false,ago:false,isento:false},
+  {nome:"Ianezza Oliveira",jun:false,jul:false,ago:false,isento:false},
+  {nome:"Jairo Gomes",jun:true,jul:true,ago:true,isento:true,obs:"isento"},
+  {nome:"Joana Souza",jun:true,jul:true,ago:false,isento:false},
+  {nome:"Jonas de Araújo",jun:false,jul:false,ago:false,isento:false},
+  {nome:"Jorge Carvalho",jun:true,jul:false,ago:false,isento:false},
+  {nome:"Jorgiana Gomes",jun:true,jul:true,ago:false,isento:false},
+  {nome:"José Neto Brandão",jun:false,jul:false,ago:false,isento:false},
+  {nome:"Juracy Rodrigues",jun:true,jul:true,ago:false,isento:false},
+  {nome:"Kethlen dos Santos",jun:true,jul:true,ago:false,isento:false},
+  {nome:"Laís Souza Pereira",jun:true,jul:false,ago:false,isento:false},
+  {nome:"Lucas Gomes",jun:true,jul:true,ago:true,isento:false},
+  {nome:"Lurdeth Prisco",jun:true,jul:true,ago:false,isento:false},
+  {nome:"Maria do Socorro",jun:false,jul:false,ago:false,isento:false},
+  {nome:"Mario Pinheiro",jun:true,jul:true,ago:true,isento:false},
+  {nome:"Noele Belém",jun:true,jul:true,ago:true,isento:false},
+  {nome:"Pastor João Mesquita",jun:true,jul:false,ago:false,isento:false},
+  {nome:"Pastora Silvia",jun:true,jul:false,ago:false,isento:false},
+  {nome:"Perpétua Pereira",jun:false,jul:false,ago:false,isento:false},
+  {nome:"Poliana Pereira",jun:false,jul:false,ago:false,isento:true,obs:"isento"},
+  {nome:"Rafael dos Santos",jun:true,jul:true,ago:true,isento:false},
+  {nome:"Raifran Viana",jun:true,jul:true,ago:false,isento:false},
+  {nome:"Sandra Regina",jun:true,jul:true,ago:true,isento:false},
+  {nome:"Taiana Dutra",jun:false,jul:false,ago:false,isento:false},
+  {nome:"Viviane Viana",jun:true,jul:true,ago:true,isento:false},
+  {nome:"Zébedeu Pereira",jun:true,jul:true,ago:false,isento:false}
+];
+
+// CARREGAR
+function carregar(){
+  const s = localStorage.getItem('dados');
+  const g = localStorage.getItem('gastos');
+  pessoas = s ? JSON.parse(s) : [...base];
+  gastos = g ? JSON.parse(g) : [];
+  salvar();
+  montarLista();
+  montarDespesas();
+  atualizarValores();
+}
+function salvar(){
+  localStorage.setItem('dados', JSON.stringify(pessoas));
+  localStorage.setItem('gastos', JSON.stringify(gastos));
+}
+
+// ✅ QUADRADOS — MARCAR / DESMARCAR
+function marcar(i, m){
+  pessoas[i][m] = !pessoas[i][m];
+  salvar();
+  montarLista();
+}
+
+function montarLista(){
+  const div = document.getElementById('lista');
+  div.innerHTML = '';
+  pessoas.forEach((p, i)=>{
+    const linha = document.createElement('div');
+    linha.className = `linha ${p.isento?'isento':''}`;
+    linha.innerHTML = `
+      <div><div>${p.nome}</div>${p.obs?`<div style="font-size:12px;color:#888">${p.obs}</div>`:''}</div>
+      <div class="quadrado ${p.jun?'checado':''}" onclick="marcar(${i},'jun')">✓</div>
+      <div class="quadrado ${p.jul?'checado':''}" onclick="marcar(${i},'jul')">✓</div>
+      <div class="quadrado ${p.ago?'checado':''}" onclick="marcar(${i},'ago')">✓</div>
+      <button class="excluir" onclick="pessoas.splice(${i},1);salvar();montarLista()">✕</button>
+    `;
+    div.appendChild(linha);
+  });
+  document.getElementById('qtd').textContent = pessoas.length + ' pessoas';
+}
+
+function adicionar(){
+  const nome = document.getElementById('nomeNovo').value.trim();
+  if(!nome) return alert('Digite o nome!');
+  pessoas.push({nome,jun:false,jul:false,ago:false,isento:false});
+  document.getElementById('nomeNovo').value='';
+  salvar(); montarLista();
+}
+
+// DESPESAS
+function atualizarValores(){
+  const totalGasto = gastos.reduce((s,x)=>s+x.valor, 0);
+  const liq = VALOR_TOTAL - totalGasto;
+  document.getElementById('bruto').textContent = 'R$ '+VALOR_TOTAL.toFixed(2).replace('.',',');
+  document.getElementById('gasto').textContent = 'R$ '+totalGasto.toFixed(2).replace('.',',');
+  document.getElementById('liquido').textContent = 'R$ '+liq.toFixed(2).replace('.',',');
+  document.getElementById('itens').textContent = gastos.length+' item'+(gastos.length!==1?'ens':'');
+}
+
+function novaDespesa(){
+  const n = document.getElementById('nomeDesp').value.trim();
+  const v = parseFloat(document.getElementById('valorDesp').value);
+  if(!n) return alert('Nome do item!');
+  if(isNaN(v)||v<=0) return alert('Valor inválido!');
+  gastos.push({nome:n, valor:v});
+  document.getElementById('nomeDesp').value='';
+  document.getElementById('valorDesp').value='';
+  salvar(); montarDespesas(); atualizarValores();
+}
+
+function montarDespesas(){
+  const div = document.getElementById('listaDesp');
+  if(gastos.length===0){
+    div.innerHTML = '<p class="sem">Nenhuma despesa ainda.</p>';
+    return;
+  }
+  div.innerHTML = '';
+  gastos.forEach((d,i)=>{
+    const el = document.createElement('div');
+    el.className='item-desp';
+    el.innerHTML = `
+      <span>${d.nome}</span>
+      <span class="v">R$ ${d.valor.toFixed(2).replace('.',',')}</span>
+      <button class="excluir" onclick="gastos.splice(${i},1);salvar();montarDespesas();atualizarValores()">✕</button>
+    `;
+    div.appendChild(el);
+  });
+  atualizarValores();
+}
+
+// INICIAR
+carregar();
+</script>
+
+</body>
+</html>
