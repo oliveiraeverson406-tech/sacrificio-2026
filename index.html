@@ -196,7 +196,20 @@
     cursor:pointer; position:relative;
   }
   footer button.primary{background:var(--stone-dark); color:var(--parchment);}
-  footer input[type=file]{display:none;}
+  footer label.primary{
+    flex:1; padding:12px; border-radius:9px; border:1px solid var(--stone-dark);
+    background:var(--stone-dark); color:var(--parchment); font-size:13.5px; font-weight:600;
+    cursor:pointer; text-align:center; display:flex; align-items:center; justify-content:center;
+  }
+  footer input[type=file]{
+    position:absolute;
+    width:1px; height:1px;
+    padding:0; margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+  }
 
   .badge-dot{
     position:absolute; top:-5px; right:-5px; width:11px; height:11px; border-radius:50%;
@@ -310,7 +323,8 @@
 
 <footer>
   <button id="export-btn">⬇ Exportar backup<span class="badge-dot" id="badge-dot"></span></button>
-  <button class="primary" id="import-btn">⬆ Importar backup</button>
+  <button class="primary" id="import-btn" style="display:none;">⬆ Importar backup</button>
+  <label class="primary" for="file-input">⬆ Importar backup</label>
   <input type="file" id="file-input" accept="application/json">
 </footer>
 
@@ -548,15 +562,4 @@ document.getElementById('list').addEventListener('click', e=>{
     const c = data.contribuintes.find(x=>x.id===edit.dataset.id);
     if(c){
       const novoNome = prompt('Corrigir nome:', c.nome);
-      if(novoNome !== null && novoNome.trim()){
-        c.nome = novoNome.trim();
-      } else if(novoNome === null){
-        return; // cancelou tudo
-      }
-      const novaObs = prompt('Observação (opcional, ex: vai doar cimento). Deixe em branco pra remover:', c.obs || '');
-      if(novaObs !== null){
-        c.obs = novaObs.trim();
-      }
-      c.isento = confirm('Marcar como isento da contribuição em dinheiro?\n(a pessoa continua na lista, mas some das contas de R$)\n\nOK = isento · Cancelar = participa do dinheiro normalmente');
-      markDirty();
-      save(
+      if(novoNome !== null && nov
