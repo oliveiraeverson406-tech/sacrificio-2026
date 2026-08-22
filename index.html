@@ -15,7 +15,7 @@
       padding: 25px 20px;
     }
     header .topo-texto {font-size: 15px; color: #E8B864; letter-spacing: 1px;}
-    header h1 {font-size: 30px; margin: 5px 0;}
+    header h1 {font-size: 30px; margin: 5px 0; font-weight: 800;}
     header .sub {font-size: 17px; opacity: 0.9;}
     .linha-dourada {height: 3px; background: linear-gradient(90deg, #C89B3C, #E8B864, #C89B3C); margin-top: 12px;}
 
@@ -28,65 +28,68 @@
       display: flex; flex-direction: column; justify-content: flex-end;
     }
     .barra-texto {position: absolute; top: 6px; left: 0; right: 0; color: white; font-size: 15px; font-weight: bold; z-index: 2;}
-    .barra-porcentagem {background-color: #C89B3C; padding: 6px 0; font-weight: bold; color: #222; position: relative; z-index: 1;}
-    .barra-mes label {display: block; margin-top: 6px; font-size: 15px; color: #444;}
+    .barra-porcentagem {background-color: #C89B3C; padding: 6px 0; font-weight: 900; font-size: 18px; color: #222; position: relative; z-index: 1;}
+    .barra-mes label {display: block; margin-top: 6px; font-size: 15px; color: #444; font-weight: 600;}
 
     /* 📈 CARTÕES DOS MESES */
     .cartoes {display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; padding: 0 15px 15px;}
     .cartao {background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);}
-    .cartao h3 {font-size: 15px; color: #666;}
-    .cartao .valor {font-size: 28px; font-weight: bold; margin: 4px 0 8px;}
-    .cartao p {font-size: 14px; color: #555; margin: 4px 0;}
+    .cartao h3 {font-size: 15px; color: #666; font-weight: 700;}
+    .cartao .valor {font-size: 28px; font-weight: 900; margin: 4px 0 8px;}
+    /* ✅ METAS E CONTADORES — MAIS GROSSOS! */
+    .cartao p {font-size: 15px; color: #444; margin: 6px 0; font-weight: 700; line-height: 1.5;}
 
     /* ✅ TOTAL GERAL */
-    .total-geral {background-color: #406343; color: white; margin: 0 15px 20px; padding: 15px 20px; border-radius: 10px; font-size: 22px; font-weight: bold;}
+    .total-geral {background-color: #406343; color: white; margin: 0 15px 20px; padding: 15px 20px; border-radius: 10px; font-size: 22px; font-weight: 900;}
 
     /* 📋 LISTA CONTRIBUINTES */
     .container {padding: 0 15px;}
-    .titulo-lista {display: flex; justify-content: space-between; align-items: center; font-size: 22px; margin-bottom: 12px;}
+    .titulo-lista {display: flex; justify-content: space-between; align-items: center; font-size: 22px; margin-bottom: 12px; font-weight: 800;}
     .add-area {display: flex; gap: 8px; margin-bottom: 15px;}
     .add-area input {flex: 1; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px;}
-    button {background-color: #406343; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 16px; cursor: pointer;}
+    button {background-color: #406343; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: 700;}
 
     /* TABELA */
-    .cab-tabela {display: grid; grid-template-columns: 3fr 60px 60px 60px 70px; padding: 8px 10px; font-weight: bold; color: #666;}
+    .cab-tabela {display: grid; grid-template-columns: 3fr 60px 60px 60px 70px; padding: 8px 10px; font-weight: 900; color: #444; font-size: 15px;}
     .linha {display: grid; grid-template-columns: 3fr 60px 60px 60px 70px; align-items: center; background: white; padding: 12px 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #E5DDCB;}
     .linha.isento {background: #F0EBD8; color: #666;}
-    .linha .nome {font-size: 16px;}
-    .linha .sub {font-size: 12px; color: #888;}
+    /* ✅ NOME DO CONTRIBUINTE — MAIS GROSSO! */
+    .linha .nome {font-size: 17px; font-weight: 800;}
+    .linha .sub {font-size: 12px; color: #888; font-weight: 500;}
 
     /* ✅ QUADRADOS DE MARCAÇÃO */
     .quadrado {
       width: 32px; height: 32px; border: 2px solid #D4C9AE; border-radius: 4px;
       background: #F8F4E9; margin: 0 auto; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      font-weight: bold; color: transparent; transition: 0.2s;
+      font-weight: 900; color: transparent; transition: 0.2s; font-size: 18px;
     }
     .quadrado.checado {background-color: #C89B3C; border-color: #B0852F; color: white;}
     .acoes {display: flex; justify-content: center; gap: 4px;}
-    .btn-excluir {background: none; border: none; font-size: 18px; padding: 4px; cursor: pointer; color: #A83232;}
+    .btn-excluir {background: none; border: none; font-size: 18px; padding: 4px; cursor: pointer; color: #A83232; font-weight: bold;}
 
     /* 💰 CAIXA E COMPRAS */
     .caixa {margin-top: 30px; padding-top: 20px; border-top: 2px dashed #C4B89C;}
-    .caixa-titulo {display: flex; justify-content: space-between; align-items: center; font-size: 22px; margin-bottom: 15px;}
+    .caixa-titulo {display: flex; justify-content: space-between; align-items: center; font-size: 22px; margin-bottom: 15px; font-weight: 800;}
     .caixa-cards {display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;}
     .card-valor {background: white; border-radius: 10px; padding: 15px;}
-    .card-valor .rotulo {font-size: 14px; color: #666; text-transform: uppercase;}
-    .card-valor .v-bruto {font-size: 26px; font-weight: bold; margin-top: 4px;}
-    .card-valor .v-gasto {font-size: 26px; font-weight: bold; color: #A83232; margin-top: 4px;}
+    .card-valor .rotulo {font-size: 14px; color: #666; text-transform: uppercase; font-weight: 700;}
+    .card-valor .v-bruto {font-size: 26px; font-weight: 900; margin-top: 4px;}
+    .card-valor .v-gasto {font-size: 26px; font-weight: 900; color: #A83232; margin-top: 4px;}
     .caixa-liquido {background-color: #3A2E24; color: white; border-radius: 10px; padding: 15px 20px; margin: 12px 0 20px;}
-    .caixa-liquido .rotulo {font-size: 15px; color: #E8B864;}
-    .caixa-liquido .valor {font-size: 30px; font-weight: bold; margin-top: 4px;}
+    .caixa-liquido .rotulo {font-size: 15px; color: #E8B864; font-weight: 700;}
+    .caixa-liquido .valor {font-size: 30px; font-weight: 900; margin-top: 4px;}
 
     .despesa-inputs {display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;}
     .despesa-inputs input {padding: 14px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px;}
-    .btn-mais {width: 100%; font-size: 20px; padding: 10px;}
+    .btn-mais {width: 100%; font-size: 20px; padding: 10px; font-weight: 800;}
 
     .item-desp {display: grid; grid-template-columns: 3fr 1fr auto; background: white; padding: 12px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #E5DDCB;}
-    .item-desp .v {font-weight: bold; color: #A83232; text-align: right;}
-    .sem {text-align: center; color: #999; padding: 20px;}
+    .item-desp span {font-weight: 700;}
+    .item-desp .v {font-weight: 900; color: #A83232; text-align: right; font-size: 16px;}
+    .sem {text-align: center; color: #999; padding: 20px; font-weight: 600;}
 
-    /* 💾 BOTÃO SALVAR / BAIXAR */
+    /* 💾 BOTÕES DE SALVAR — FIXO EM BAIXO */
     .botoes-final {
       position: fixed; bottom: 0; left: 0; right: 0;
       background: white; padding: 12px 15px;
@@ -94,8 +97,8 @@
       display: flex; gap: 10px;
       box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
     }
-    .btn-salvar {flex: 1; background: #2c7a4c; font-weight: bold;}
-    .btn-exportar {flex: 1; background: #3A2E24;}
+    .btn-salvar {flex: 1; background: #2c7a4c; font-weight: 900;}
+    .btn-exportar {flex: 1; background: #3A2E24; font-weight: 900;}
 
     @media (max-width: 600px) {
       .cab-tabela, .linha {grid-template-columns: 3fr 50px 50px 50px 60px;}
@@ -133,7 +136,7 @@
   </div>
 </div>
 
-<!-- 📈 CARTÕES -->
+<!-- 📈 CARTÕES → METAS E CONTADORES MAIS GROSSOS -->
 <div class="cartoes">
   <div class="cartao">
     <h3>JUNHO</h3>
@@ -350,9 +353,9 @@ function montarDespesas(){
   atualizarValoresCaixa();
 }
 
-// ⬇️ NOVO: BOTÃO SALVAR / BAIXAR ARQUIVO
+// ⬇️ BOTÃO SALVAR / BAIXAR
 window.baixarArquivo = function(){
-  alert('✅ Arquivo salvo! O site já salva tudo sozinho automaticamente.\n\n📁 Para guardar cópia: clique em "Baixar" na página do GitHub ou use o botão Backup ao lado.');
+  alert('✅ Salvo! Os dados ficam guardados automaticamente.\n\n📤 Use o botão "Backup" para baixar um arquivo de segurança.');
 };
 
 window.exportarDados = function(){
@@ -361,7 +364,7 @@ window.exportarDados = function(){
   arq.href = URL.createObjectURL(new Blob([JSON.stringify(tudo,null,2)], {type:'application/json'}));
   arq.download = 'sacrificio-2026-backup.json';
   arq.click();
-  alert('✅ Backup baixado! Guarde esse arquivo seguro!');
+  alert('✅ Backup baixado com sucesso!');
 };
 
 // 🚀 INICIAR
