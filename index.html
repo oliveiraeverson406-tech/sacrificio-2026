@@ -17,7 +17,7 @@
     .cartao {background:white; padding:10px; border-radius:8px;}
     .cartao h3 {font-size:14px; color:#666; margin-bottom:5px;}
     .valor {font-size:20px; font-weight:bold;}
-    .cartao p {font-size:12px; color:#666; margin-top:4px;}
+    .cartao p {font-size:12px; color:#666; margin-top:4px; line-height:1.4;}
     .total-geral {background:#406343; color:white; margin:10px; padding:12px; border-radius:8px; font-weight:bold; font-size:18px;}
     .backup-area {margin:10px; padding:12px; background:#fff8e8; border:2px dashed #E8B864; border-radius:8px;}
     .backup-area strong {display:block; margin-bottom:8px; color:#856404;}
@@ -92,19 +92,19 @@
     <h3>JUNHO</h3>
     <div class="valor" id="val-jun">R$ 0</div>
     <p id="meta-jun">META R$ 1.800 · FALTAM R$ 1.800</p>
-    <p id="cont-jun">0 CONTRIBUÍRAM</p>
+    <p id="cont-jun">0 CONTRIBUÍRAM · 0 FALTAM</p>
   </div>
   <div class="cartao">
     <h3>JULHO</h3>
     <div class="valor" id="val-jul">R$ 0</div>
     <p id="meta-jul">META R$ 1.800 · FALTAM R$ 1.800</p>
-    <p id="cont-jul">0 CONTRIBUÍRAM</p>
+    <p id="cont-jul">0 CONTRIBUÍRAM · 0 FALTAM</p>
   </div>
   <div class="cartao">
     <h3>AGOSTO</h3>
     <div class="valor" id="val-ago">R$ 0</div>
     <p id="meta-ago">META R$ 1.800 · FALTAM R$ 1.800</p>
-    <p id="cont-ago">0 CONTRIBUÍRAM</p>
+    <p id="cont-ago">0 CONTRIBUÍRAM · 0 FALTAM</p>
   </div>
 </div>
 
@@ -243,19 +243,31 @@ function salvar(){
 function atualizar(){
   document.getElementById('qtd').textContent = pessoas.length + ' pessoas';
   let totalArrec = 0;
+  const totalPessoas = pessoas.length;
+  
   MESES.forEach(mes => {
     const pag = pessoas.filter(p => p[mes] && !p.isento).length;
+    const isentos = pessoas.filter(p => p[mes] && p.isento).length;
     const valorMes = pag * VALOR;
     totalArrec += valorMes;
     const pct = Math.min(100, Math.round((valorMes / META) * 100));
     const falta = META - valorMes;
+    const faltamPessoas = totalPessoas - pag - isentos;
+    
     const barra = document.getElementById(`barra-${mes}`);
     barra.style.height = pct + '%';
     barra.textContent = pct + '%';
+    
     document.getElementById(`val-${mes}`).textContent = 'R$ ' + valorMes.toLocaleString('pt-BR');
     document.getElementById(`meta-${mes}`).textContent = `META R$ ${META.toLocaleString('pt-BR')} · FALTAM R$ ${Math.max(0,falta).toLocaleString('pt-BR')}`;
-    document.getElementById(`cont-${mes}`).textContent = `${pag} CONTRIBUÍRAM`;
+    
+    // ✅ AQUI APARECE TUDO: PAGOU · FALTA
+    let texto = `${pag} CONTRIBUÍRAM`;
+    if(isentos > 0) texto += ` · ${isentos} ISENTO${isentos>1?'S':''}`;
+    texto += ` · ${faltamPessoas} FALTAM`;
+    document.getElementById(`cont-${mes}`).textContent = texto;
   });
+  
   const gastoTotal = compras.reduce((s,x) => s + x.valor, 0);
   document.getElementById('total-geral').textContent = `TOTAL GERAL · R$ ${totalArrec.toLocaleString('pt-BR')} / R$ ${(META*3).toLocaleString('pt-BR')}`;
   document.getElementById('arrec').textContent = 'R$ ' + totalArrec.toFixed(2).replace('.',',');
