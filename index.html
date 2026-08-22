@@ -317,6 +317,10 @@
 <div class="toast" id="toast"></div>
 
 <script>
+window.addEventListener('error', function(e){
+  alert('ERRO DETECTADO:\n' + e.message + '\nLinha: ' + e.lineno + '\nArquivo: ' + e.filename);
+});
+
 const STORAGE_KEY = "sacrificio2026";
 const MONTHS = ["jun","jul","ago"];
 const MONTH_LABELS = {jun:"Junho", jul:"Julho", ago:"Agosto"};
@@ -557,6 +561,4 @@ document.getElementById('list').addEventListener('click', e=>{
       if(novaObs !== null){
         c.obs = novaObs.trim();
       }
-      c.isento = confirm('Marcar como isento da contribuição em dinheiro?\n(a pessoa continua na lista, mas some das contas de R$)\n\nOK = isento · Cancelar = participa do dinheiro normalmente');
-      markDirty();
-      save(
+      c.isento = confirm('Marcar como isento da contribuição em dinheiro?\n(a p
