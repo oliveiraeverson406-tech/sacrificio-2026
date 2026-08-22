@@ -521,6 +521,7 @@ document.getElementById('new-name').addEventListener('keydown', e=>{
   if(e.key === 'Enter') addContribuinte();
 });
 function addContribuinte(){
+  alert('Botao Adicionar foi clicado!');
   ensureData();
   const input = document.getElementById('new-name');
   const nome = input.value.trim();
@@ -561,4 +562,4 @@ document.getElementById('list').addEventListener('click', e=>{
       if(novaObs !== null){
         c.obs = novaObs.trim();
       }
-      c.isento = confirm('Marcar como isento da contribuição em dinheiro?\n(a p
+      c.isento = confirm('Marcar como 
