@@ -1,557 +1,737 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sacrifício 2026</title>
-<meta name="theme-color" content="#3A3226">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Sacrifício">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="icon" href="icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --stone-dark:#3A3226;
-    --stone-ink:#2A241A;
-    --parchment:#EFEADC;
-    --parchment-2:#E4DCC6;
-    --gold:#C08A28;
-    --gold-light:#D6A54F;
-    --moss:#4A5D45;
-    --terra:#A8503A;
-    --line:#D8CFB6;
-    --shadow: 0 2px 8px rgba(42,36,26,0.12);
-  }
-  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  html,body{margin:0; padding:0;}
-  body{
-    background:var(--parchment);
-    color:var(--stone-ink);
-    font-family:'Inter',sans-serif;
-    padding-bottom:48px;
-    min-height:100vh;
-  }
-  h1,h2,.num{font-family:'Fraunces',serif;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campanha 2026 — Sacrifício</title>
+  <style>
+    /* ⚙️ CONFIGURAÇÕES GERAIS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
 
-  header{
-    background:var(--stone-dark);
-    color:var(--parchment);
-    padding:28px 20px 22px;
-    border-bottom:4px solid var(--gold);
-  }
-  header .eyebrow{
-    font-size:14.2px; letter-spacing:0.14em; text-transform:uppercase;
-    color:var(--gold-light); font-weight:600; margin-bottom:4px;
-  }
-  header h1{font-size:30.7px; font-weight:700; margin:0 0 2px; line-height:1.15;}
-  header p{margin:0; font-size:21.2px; color:#FFFFFF; font-famyle:'Georgia'serif;}
+    body {
+      background-color: #F5F0E1;
+      color: #333;
+      line-height: 1.5;
+      padding-bottom: 40px;
+    }
 
-  /* Staircase signature element */
-  .stairs{
-    display:flex; align-items:flex-end; gap:8px;
-    padding:22px 20px 6px;
-    background:var(--stone-dark);
-  }
-  .step{
-    flex:1;
-    background:rgba(255,255,255,0.06);
-    border-radius:6px 6px 0 0;
-    position:relative;
-    overflow:hidden;
-    display:flex; flex-direction:column; justify-content:flex-end;
-    border:1px solid rgba(255,255,255,0.08);
-  }
-  .step:nth-child(1){height:64px;}
-  .step:nth-child(2){height:92px;}
-  .step:nth-child(3){height:120px;}
-  .step .fill{
-    background:linear-gradient(180deg, var(--gold-light), var(--gold));
-    width:100%;
-    transition:height .5s ease;
-  }
-  .step .label{
-    position:absolute; top:6px; left:0; right:0; text-align:center;
-    font-size:13px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
-    color:#EFEADC;
-  }
-  .step .pct{
-    position:absolute; bottom:6px; left:0; right:0; text-align:center;
-    font-family:'Fraunces',serif; font-weight:700; font-size:17.7px; color:#2A241A;
-    text-shadow:0 1px 0 rgba(255,255,255,0.25);
-  }
-  .step.done{box-shadow:0 0 0 2px var(--gold-light) inset;}
+    /* 🔝 CABEÇALHO PRINCIPAL */
+    .cabecalho-principal {
+      background-color: #3A2E24;
+      color: white;
+      padding: 25px 20px;
+    }
 
-  .summary{
-    display:grid; grid-template-columns:1fr 1fr; gap:10px;
-    padding:16px 20px 4px;
-  }
-  .card{
-    background:#fff; border:1px solid var(--line); border-radius:10px;
-    padding:12px 14px; box-shadow:var(--shadow);
-  }
-  .card .label{font-size:13.6px; color:#6B6250; text-transform:uppercase; letter-spacing:.05em; font-weight:600;}
-  .card .value{font-family:'Fraunces',serif; font-size:24.8px; font-weight:700; margin-top:2px; color:var(--stone-ink);}
-  .card.total{grid-column:1 / -1; background:var(--moss); border:none;}
-  .card.total .label{color:#CFE0CB;}
-  .card.total .value{color:#fff;}
+    .cabecalho-principal h2 {
+      font-size: 16px;
+      color: #E8B864;
+      letter-spacing: 1px;
+    }
 
-  /* Lembrete de backup */
-  .backup-alert{
-    margin:14px 20px 0;
-    background:#F7E7C6;
-    border:1px solid var(--gold);
-    color:#5C4419;
-    padding:10px 14px;
-    border-radius:10px;
-    font-size:14.8px;
-    font-weight:600;
-    align-items:center;
-    gap:8px;
-    line-height:1.4;
-  }
-  .backup-alert.urgent{
-    background:#F3DCD3;
-    border-color:var(--terra);
-    color:#6B2E1F;
-  }
-  .backup-alert .dot{
-    width:8px; height:8px; border-radius:50%; background:var(--terra); flex:0 0 auto;
-  }
+    .cabecalho-principal h1 {
+      font-size: 32px;
+      margin: 5px 0;
+    }
 
-  section.list-wrap{padding:18px 20px 0;}
-  .list-head{
-    display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px;
-  }
-  .list-head h2{font-size:18.9px; margin:0; font-weight:600;}
-  .list-head span{font-size:14.8px; color:#7A7159;}
+    .cabecalho-principal p {
+      font-size: 18px;
+      opacity: 0.9;
+    }
 
-  .add-row{
-    display:flex; gap:8px; margin-bottom:14px;
-  }
-  .add-row input{
-    flex:1; padding:11px 12px; border-radius:8px; border:1px solid var(--line);
-    font-size:17.7px; font-family:'Inter',sans-serif; background:#fff;
-  }
-  .add-row input:focus{outline:2px solid var(--gold); outline-offset:1px;}
-  .add-row button{
-    background:var(--moss); color:#fff; border:none; border-radius:8px;
-    padding:0 18px; font-size:16.5px; font-weight:600; cursor:pointer;
-  }
-  .add-row button:active{transform:scale(.97);}
+    .linha-dourada {
+      height: 3px;
+      background: linear-gradient(90deg, #C89B3C, #E8B864, #C89B3C);
+      margin-top: 12px;
+    }
 
-  .col-heads{
-    display:grid; grid-template-columns:1fr 34px 34px 34px 26px 26px;
-    gap:6px; padding:0 4px 6px; font-size:13px; color:#8A8066;
-    text-transform:uppercase; letter-spacing:.04em; font-weight:600; text-align:center;
-  }
-  .col-heads span:first-child{text-align:left;}
+    /* 📊 BARRAS DE PERCENTUAL */
+    .barras-meses {
+      display: flex;
+      gap: 8px;
+      padding: 15px 20px;
+    }
 
-  ul.contrib-list{list-style:none; margin:0; padding:0;}
-  .contrib-list li{
-    display:grid; grid-template-columns:1fr 34px 34px 34px 26px 26px;
-    align-items:center; gap:6px;
-    background:#fff; border:1px solid var(--line); border-radius:8px;
-    padding:9px 6px 9px 12px; margin-bottom:7px;
-  }
-  .contrib-list .name{
-    font-size:17.1px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-  }
-  .contrib-list .name-wrap{overflow:hidden;}
-  .contrib-list .obs{
-    font-size:13px; color:#96835A; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-    margin-top:1px; font-style:italic;
-  }
-  .contrib-list li.isento{background:var(--parchment-2);}
-  .contrib-list li.isento .chk{opacity:0.3; pointer-events:none;}
-  .chk{
-    width:30px; height:30px; border-radius:6px; border:1.5px solid var(--line);
-    background:#F7F4EA; display:flex; align-items:center; justify-content:center;
-    cursor:pointer; font-size:17.7px; color:transparent; margin:0 auto;
-  }
-  .chk.checked{
-    background:var(--gold); border-color:var(--gold); color:#fff; font-weight:700;
-  }
-  .del-btn, .edit-btn{
-    width:26px; height:26px; border-radius:50%; border:none; background:transparent;
-    font-size:16.5px; cursor:pointer; margin:0 auto; display:flex; align-items:center; justify-content:center;
-  }
-  .del-btn{color:var(--terra);}
-  .edit-btn{color:var(--moss);}
+    .barra-mes {
+      flex: 1;
+      text-align: center;
+    }
 
-  .empty{
-    text-align:center; padding:30px 10px; color:#8A8066; font-size:16.5px;
-  }
+    .barra-caixa {
+      background-color: #3A2E24;
+      border-radius: 8px 8px 0 0;
+      padding-top: 8px;
+      height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+    }
 
-  footer{
-    padding:22px 20px 10px; display:flex; gap:10px;
-  }
-  footer button{
-    flex:1; padding:12px; border-radius:9px; border:1px solid var(--stone-dark);
-    background:transparent; color:var(--stone-dark); font-size:15.9px; font-weight:600;
-    cursor:pointer; position:relative;
-  }
-  footer button.primary{background:var(--stone-dark); color:var(--parchment);}
-  footer input[type=file]{display:none;}
+    .barra-porcentagem {
+      background-color: #C89B3C;
+      padding: 6px;
+      font-weight: bold;
+      color: #222;
+    }
 
-  .badge-dot{
-    position:absolute; top:-5px; right:-5px; width:11px; height:11px; border-radius:50%;
-    background:var(--terra); border:2px solid var(--parchment); display:none;
-  }
+    .barra-mes label {
+      color: white;
+      font-size: 15px;
+      padding: 4px;
+    }
 
-  .toast{
-    position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
-    background:var(--stone-ink); color:#fff; padding:10px 18px; border-radius:20px;
-    font-size:15.9px; opacity:0; pointer-events:none; transition:all .25s ease;
-    box-shadow:0 4px 14px rgba(0,0,0,.25); max-width:88%; text-align:center;
-  }
-  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+    /* 📈 CARTÕES DOS MESES */
+    .cartoes-meses {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      padding: 0 20px 15px;
+    }
 
-  /* ===== Painel de Caixa / Despesas ===== */
-  .caixa-section{
-    margin:26px 20px 0;
-    padding-top:18px;
-    border-top:3px dashed var(--line);
-  }
-  .caixa-title{
-    display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px;
-  }
-  .caixa-title h2{font-size:18.9px; margin:0; font-weight:600;}
-  .caixa-title span{font-size:14.2px; color:#7A7159;}
+    .cartao-mes {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
 
-  .caixa-cards{
-    display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;
-  }
-  .caixa-cards .card.bruto .value{color:var(--stone-ink);}
-  .caixa-cards .card.gasto .value{color:var(--terra);}
-  .caixa-cards .card.liquido{grid-column:1 / -1; background:var(--stone-dark); border:none;}
-  .caixa-cards .card.liquido .label{color:var(--gold-light);}
-  .caixa-cards .card.liquido .value{color:#fff; font-size:28.3px;}
-  .caixa-cards .card.liquido.negativo{background:var(--terra);}
-  .caixa-cards .card.liquido.negativo .label{color:#F3DCD3;}
+    .cartao-mes h3 {
+      font-size: 15px;
+      color: #666;
+    }
 
-  .add-row.despesa input.item-nome{flex:1.4;}
-  .add-row.despesa input.item-valor{flex:0.8;}
+    .cartao-mes .valor {
+      font-size: 28px;
+      font-weight: bold;
+      color: #222;
+      margin: 4px 0;
+    }
 
-  ul.despesa-list{list-style:none; margin:0; padding:0;}
-  .despesa-list li{
-    display:grid; grid-template-columns:1fr auto 26px;
-    align-items:center; gap:8px;
-    background:#fff; border:1px solid var(--line); border-radius:8px;
-    padding:9px 6px 9px 12px; margin-bottom:7px;
-  }
-  .despesa-list .item-nome-txt{
-    font-size:17.1px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-  }
-  .despesa-list .item-valor-txt{
-    font-family:'Fraunces',serif; font-weight:700; font-size:17.1px; color:var(--terra); white-space:nowrap;
-  }
+    .cartao-mes p {
+      font-size: 14px;
+      color: #555;
+      margin: 3px 0;
+    }
 
-  @media (min-width:480px){
-    body{max-width:480px; margin:0 auto; box-shadow:0 0 24px rgba(0,0,0,.06);}
-  }
-</style>
+    /* ✅ TOTAL GERAL */
+    .total-geral {
+      background-color: #406343;
+      color: white;
+      margin: 0 20px 20px;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    /* 📋 LISTA CONTRIBUINTES */
+    .container-lista {
+      padding: 0 20px 25px;
+    }
+
+    .titulo-lista {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
+
+    .adicionar-area {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .adicionar-area input {
+      flex: 1;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .btn-adicionar {
+      background-color: #406343;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* 📑 TABELA */
+    .cabecalho-tabela {
+      display: grid;
+      grid-template-columns: 3fr repeat(3, 1fr) 80px;
+      padding: 8px 10px;
+      font-weight: bold;
+      color: #666;
+    }
+
+    .linha-contribuinte {
+      display: grid;
+      grid-template-columns: 3fr repeat(3, 1fr) 80px;
+      align-items: center;
+      background: white;
+      padding: 12px 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border: 1px solid #E5DDCB;
+    }
+
+    .linha-contribuinte.isento {
+      background: #F0EBD8;
+      color: #666;
+    }
+
+    .linha-contribuinte .nome {
+      font-size: 16px;
+    }
+
+    .linha-contribuinte .subnome {
+      font-size: 12px;
+      color: #888;
+    }
+
+    /* ✅ CAIXAS DE CHECK */
+    .check-mes {
+      width: 28px;
+      height: 28px;
+      border: 1px solid #D4C9AE;
+      border-radius: 4px;
+      background: #F8F4E9;
+      cursor: pointer;
+      justify-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      transition: 0.2s;
+    }
+
+    .check-mes.checado {
+      background-color: #C89B3C;
+      border-color: #B0852F;
+    }
+
+    /* ✏️ BOTÕES AÇÃO */
+    .acoes {
+      display: flex;
+      gap: 6px;
+      justify-self: center;
+    }
+
+    .btn-editar, .btn-excluir {
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn-excluir {
+      color: #A83232;
+    }
+
+    /* 💰 CAIXA E DESPESAS — AGORA EM BAIXO! */
+    .caixa-area {
+      padding: 0 20px 25px;
+      border-top: 1px dashed #C4B89C;
+      margin-top: 10px;
+    }
+
+    .caixa-titulo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 22px;
+      margin: 15px 0 12px;
+    }
+
+    .caixa-titulo .itens {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .caixa-cartoes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .cartao-bruto, .cartao-gasto {
+      background: white;
+      border-radius: 10px;
+      padding: 12px 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+
+    .cartao-bruto .rotulo, .cartao-gasto .rotulo {
+      font-size: 14px;
+      color: #666;
+      text-transform: uppercase;
+    }
+
+    .cartao-bruto .valor {
+      font-size: 24px;
+      font-weight: bold;
+      color: #222;
+    }
+
+    .cartao-gasto .valor {
+      font-size: 24px;
+      font-weight: bold;
+      color: #A83232;
+    }
+
+    .caixa-liquido {
+      background-color: #3A2E24;
+      color: white;
+      border-radius: 10px;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+    }
+
+    .caixa-liquido .rotulo {
+      font-size: 15px;
+      color: #E8B864;
+    }
+
+    .caixa-liquido .valor {
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    /* 📝 ÁREA DE DESPESA */
+    .despesa-inputs {
+      display: grid;
+      grid-template-columns: 2fr 1fr auto;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .despesa-inputs input {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .btn-despesa {
+      background-color: #406343;
+      color: white;
+      border: none;
+      padding: 0 18px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .lista-despesas {
+      margin-top: 10px;
+    }
+
+    .item-despesa {
+      display: grid;
+      grid-template-columns: 3fr 1fr auto;
+      align-items: center;
+      background: white;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      border: 1px solid #E5DDCB;
+    }
+
+    .item-despesa .valor {
+      font-weight: bold;
+      color: #A83232;
+      text-align: right;
+    }
+
+    .btn-excluir-item {
+      background: none;
+      border: none;
+      color: #A83232;
+      font-size: 18px;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
+    .sem-dados {
+      text-align: center;
+      color: #999;
+      padding: 20px;
+      font-size: 17px;
+    }
+
+    /* 💾 BOTÕES BACKUP */
+    .botoes-backup {
+      display: flex;
+      gap: 10px;
+      padding: 0 20px 20px;
+    }
+
+    .btn-backup {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-exportar {
+      background: white;
+      border: 1px solid #3A2E24;
+      color: #3A2E24;
+    }
+
+    .btn-importar {
+      background: #3A2E24;
+      color: white;
+    }
+
+    /* 📱 RESPONSIVO */
+    @media (max-width: 600px) {
+      .cabecalho-tabela, .linha-contribuinte {
+        grid-template-columns: 2fr repeat(3, 50px) 70px;
+      }
+      .despesa-inputs {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  <div class="eyebrow">Campanha 2026</div>
-  <h1>Sacrifício</h1>
-  <p>Pró-escada de entrada · R$ 50 por mês</p>
-</header>
+  <!-- 🔝 CABEÇALHO -->
+  <header class="cabecalho-principal">
+    <h2>CAMPANHA 2026</h2>
+    <h1>Sacrifício</h1>
+    <p>Pró-escada de entrada · R$ 50 por mês</p>
+    <div class="linha-dourada"></div>
+  </header>
 
-<div class="stairs" id="stairs"></div>
+  <!-- 📊 BARRAS DE PROGRESSO -->
+  <section class="barras-meses">
+    <div class="barra-mes">
+      <div class="barra-caixa">
+        <div class="barra-porcentagem">67%</div>
+      </div>
+      <label>JUNHO</label>
+    </div>
+    <div class="barra-mes">
+      <div class="barra-caixa">
+        <div class="barra-porcentagem">56%</div>
+      </div>
+      <label>JULHO</label>
+    </div>
+    <div class="barra-mes">
+      <div class="barra-caixa" style="height: 18px;">
+        <div class="barra-porcentagem">22%</div>
+      </div>
+      <label>AGOSTO</label>
+    </div>
+  </section>
 
-<div class="summary" id="summary"></div>
+  <!-- 📈 VALORES DOS MESES -->
+  <section class="cartoes-meses">
+    <div class="cartao-mes">
+      <h3>JUNHO</h3>
+      <div class="valor">R$ 1200</div>
+      <p>META R$ 1800 · FALTAM R$ 600</p>
+      <p>24 CONTRIBUÍRAM · 12 FALTAM</p>
+    </div>
+    <div class="cartao-mes">
+      <h3>JULHO</h3>
+      <div class="valor">R$ 1000</div>
+      <p>META R$ 1800 · FALTAM R$ 800</p>
+      <p>20 CONTRIBUÍRAM · 16 FALTAM</p>
+    </div>
+    <div class="cartao-mes">
+      <h3>AGOSTO</h3>
+      <div class="valor">R$ 400</div>
+      <p>META R$ 1800 · FALTAM R$ 1400</p>
+      <p>8 CONTRIBUÍRAM · 28 FALTAM</p>
+    </div>
+  </section>
 
-<div class="backup-alert" id="backup-alert" style="display:none;"></div>
+  <!-- ✅ TOTAL GERAL -->
+  <section class="total-geral">
+    TOTAL GERAL (3 MESES) &nbsp; R$ 2600 / R$ 5400
+  </section>
 
-<section class="list-wrap">
-  <div class="list-head">
-    <h2>Contribuintes</h2>
-    <span id="count-label">0 pessoas</span>
-  </div>
+  <!-- 📋 LISTA CONTRIBUINTES -->
+  <section class="container-lista">
+    <div class="titulo-lista">
+      <h2>Contribuintes</h2>
+      <span>38 pessoas</span>
+    </div>
 
-  <div class="add-row">
-    <input type="text" id="new-name" placeholder="Nome do contribuinte" autocomplete="off">
-    <button id="add-btn">Adicionar</button>
-  </div>
+    <div class="adicionar-area">
+      <input type="text" id="novoNome" placeholder="Nome do contribuinte">
+      <button class="btn-adicionar" onclick="adicionarContribuinte()">Adicionar</button>
+    </div>
 
-  <div class="col-heads">
-    <span>Nome</span><span>Jun</span><span>Jul</span><span>Ago</span><span></span><span></span>
-  </div>
+    <div class="cabecalho-tabela">
+      <span>NOME</span>
+      <span>JUN</span>
+      <span>JUL</span>
+      <span>AGO</span>
+      <span></span>
+    </div>
 
-  <ul class="contrib-list" id="list"></ul>
-  <div class="empty" id="empty-msg" style="display:none;">Nenhum contribuinte ainda.<br>Adicione o primeiro nome acima.</div>
-</section>
+    <div id="listaContribuintes"></div>
+  </section>
 
-<!-- ===== Painel de Caixa / Despesas (independente do painel de arrecadação acima) ===== -->
-<section class="caixa-section">
-  <div class="caixa-title">
-    <h2>Caixa · Despesas</h2>
-    <span id="despesa-count-label">0 itens</span>
-  </div>
+  <!-- 💰 CAIXA E DESPESAS — AGORA NO FINAL! -->
+  <section class="caixa-area">
+    <div class="caixa-titulo">
+      <h2>Caixa · Despesas</h2>
+      <span class="itens" id="qtdItens">0 itens</span>
+    </div>
 
-  <div class="caixa-cards" id="caixa-cards"></div>
+    <div class="caixa-cartoes">
+      <div class="cartao-bruto">
+        <div class="rotulo">BRUTO (ARRECADADO)</div>
+        <div class="valor" id="valorBruto">R$ 0,00</div>
+      </div>
+      <div class="cartao-gasto">
+        <div class="rotulo">TOTAL GASTO</div>
+        <div class="valor" id="valorGasto">R$ 0,00</div>
+      </div>
+    </div>
 
-  <div class="add-row despesa">
-    <input type="text" id="new-item-nome" class="item-nome" placeholder="Item comprado" autocomplete="off">
-    <input type="number" id="new-item-valor" class="item-valor" placeholder="Valor" inputmode="decimal" step="0.01" min="0">
-    <button id="add-despesa-btn">Adicionar</button>
-  </div>
+    <div class="caixa-liquido">
+      <div class="rotulo">LÍQUIDO EM CAIXA</div>
+      <div class="valor" id="valorLiquido">R$ 0,00</div>
+    </div>
 
-  <ul class="despesa-list" id="despesa-list"></ul>
-  <div class="empty" id="despesa-empty-msg" style="display:none;">Nenhuma despesa registrada ainda.</div>
-</section>
+    <div class="despesa-inputs">
+      <input type="text" id="nomeItem" placeholder="Item comprado">
+      <input type="number" step="0.01" id="valorItem" placeholder="Valor">
+      <button class="btn-despesa" onclick="adicionarDespesa()">+</button>
+    </div>
 
-<footer>
-  <button id="export-btn">⬇ Exportar backup<span class="badge-dot" id="badge-dot"></span></button>
-  <button class="primary" id="import-btn">⬆ Importar backup</button>
-  <input type="file" id="file-input" accept="application/json">
-</footer>
-<section class="caixa-section" style="border-top:1px solid var(--line); margin-top:10px;">
-  <div class="caixa-title"><h2>Código do app (index.html)</h2></div>
-  <div class="add-row" style="margin-top:10px;">
-    <button id="export-code-btn" style="flex:1; background:var(--moss); color:#fff; border:none; border-radius:8px; padding:12px; font-size:16.5px; font-weight:600;">Exportar index.html</button>
-  </div>
-  <div style="font-size:14.2px; color:#7A7159; line-height:1.5; padding:0 2px;">
-    "Exportar index.html" baixa o código atual do app — é esse arquivo que você deve anexar quando quiser pedir um ajuste.
-  </div>
-</section>
+    <div class="lista-despesas" id="listaDespesas">
+      <p class="sem-dados">Nenhuma despesa registrada ainda.</p>
+    </div>
+  </section>
 
-<div class="toast" id="toast"></div>
+  <!-- 💾 BACKUP -->
+  <section class="botoes-backup">
+    <button class="btn-backup btn-exportar" onclick="exportarBackup()">⬇ Exportar backup</button>
+    <button class="btn-backup btn-importar" onclick="importarBackup()">⬆ Importar backup</button>
+  </section>
 
-<script>
-const STORAGE_KEY = "sacrificio2026";
-const MONTHS = ["jun","jul","ago"];
-const MONTH_LABELS = {jun:"Junho", jul:"Julho", ago:"Agosto"};
-const VALOR_MES = 50;
+  <script>
+    // 📦 DADOS PRINCIPAIS
+    const VALOR_ARRECADADO = 2600;
+    let contribuintes = [];
+    let despesas = [];
 
-let data = load();
+    // 📥 DADOS INICIAIS
+    const dadosIniciais = [
+      {nome: "Alfredo de Souza", jun: false, jul: false, ago: false, isento: false},
+      {nome: "Amanda de Souza", jun: false, jul: false, ago: false, isento: false},
+      {nome: "Benedito Gama", jun: true, jul: true, ago: false, isento: false},
+      {nome: "Celma Dutra", jun: true, jul: true, ago: false, isento: false},
+      {nome: "Cléo Nogueira", jun: false, jul: false, ago: false, isento: false},
+      {nome: "Daniele Ferreira", jun: false, jul: false, ago: false, isento: false},
+      {nome: "Dariane Carneiro", jun: true, jul: true, ago: false, isento: false},
+      {nome: "Durvalina Gomes", jun: true, jul: true, ago: false, isento: false},
+      {nome: "Edina dos Reis", jun: true, jul: true, ago: true, isento: false},
+      {nome: "Elzer Gama", jun: true, jul: true, ago: false, isento: false},
+      {nome: "Everson Oliveira", jun: false, jul: false, ago: false, isento: false},
+      {nome: "Gemima Dutra", jun: false, jul: false, ago: false, isento: false},
+      {nome: "Ianezza Oliveira", jun: false, jul: false, ago: false, isento: false},
+      {nome: "Jairo Gomes", jun: true, jul: true, ago: true, isento: true, sub: "isento em dinheiro"},
+      {nome: "Joana Souza", jun: true, jul: true, ago: false, isento: false},
+      {nome: "Jonas de Araújo", jun: false, jul: false, ago: false, isento: false},
+      {nome: "Jorge Carvalho", jun: true, jul: false, ago: false, isento: false},
+      {nome: "Jorgiana Gomes", jun: true, jul: true, ago: false, isento: false},
+      {nome: "José Neto Brandão", jun: false, jul: false, ago: false, isento: false},
+      {nome: "Juracy Rodrigues", jun: true, jul: true, ago: false, isento: false},
+      {nome: "Kethlen dos Santos", jun: true, jul: true, ago: false, isento: false},
+      {nome: "Laís Souza Pereira", jun: true, jul: false, ago: false, isento: false},
+      {nome: "Lucas Gomes", jun: true, jul: true, ago: true, isento: false},
+      {nome: "Lurdeth Prisco", jun: true, jul: true, ago: false, isento: false},
+      {nome: "Maria do Socorro", jun: false, jul: false, ago: false, isento: false},
+      {nome: "Mario Pinheiro", jun: true, jul: true, ago: true, isento: false},
+      {nome: "Noele Belém", jun: true, jul: true, ago: true, isento: false},
+      {nome: "Pastor João Mesquita", jun: true, jul: false, ago: false, isento: false},
+      {nome: "Pastora Silvia", jun: true, jul: false, ago: false, isento: false},
+      {nome: "Perpétua Pereira", jun: false, jul: false, ago: false, isento: false},
+      {nome: "Poliana Pereira", jun: false, jul: false, ago: false, isento: true, sub: "isento em dinheiro"},
+      {nome: "Rafael dos Santos", jun: true, jul: true, ago: true, isento: false},
+      {nome: "Raifran Viana", jun: true, jul: true, ago: false, isento: false},
+      {nome: "Sandra Regina", jun: true, jul: true, ago: true, isento: false},
+      {nome: "Taiana Dutra", jun: false, jul: false, ago: false, isento: false},
+      {nome: "Viviane Viana", jun: true, jul: true, ago: true, isento: false},
+      {nome: "Zébedeu Pereira", jun: true, jul: true, ago: false, isento: false}
+    ];
 
-function load(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw){
-      const parsed = JSON.parse(raw);
-      if(parsed && Array.isArray(parsed.contribuintes)) return parsed;
+    // 🚀 INICIAR
+    function iniciar() {
+      const salvo = localStorage.getItem('dadosCampanha');
+      const salvoDesp = localStorage.getItem('despesasCampanha');
+      
+      if (salvo) contribuintes = JSON.parse(salvo);
+      else contribuintes = dadosIniciais;
+      
+      if (salvoDesp) despesas = JSON.parse(salvoDesp);
+      
+      atualizarCaixa();
+      renderizarListaDespesas();
+      renderizarLista();
     }
-  }catch(e){}
-  return { contribuintes: [], despesas: [], meta: { lastBackup: null, changeCount: 0 } };
-}
 
-function ensureData(){
-  if(!data || typeof data !== 'object') data = { contribuintes: [] };
-  if(!Array.isArray(data.contribuintes)) data.contribuintes = [];
-  if(!Array.isArray(data.despesas)) data.despesas = [];
-  if(!data.meta || typeof data.meta !== 'object') data.meta = { lastBackup: null, changeCount: 0 };
-}
-
-function save(){
-  ensureData();
-  try{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }catch(e){
-    // armazenamento indisponível neste ambiente — os dados continuam
-    // válidos em memória durante esta sessão, mas não persistirão.
-  }
-}
-
-function markDirty(){
-  ensureData();
-  data.meta.changeCount = (data.meta.changeCount || 0) + 1;
-}
-
-function formatDate(ts){
-  return new Date(ts).toLocaleDateString('pt-BR');
-}
-
-function formatMoney(v){
-  return v.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
-}
-
-function updateBackupBanner(){
-  ensureData();
-  const banner = document.getElementById('backup-alert');
-  const badge = document.getElementById('badge-dot');
-  const count = data.meta.changeCount || 0;
-
-  if(count === 0){
-    banner.style.display = 'none';
-    if(badge) badge.style.display = 'none';
-    return;
-  }
-  if(badge) badge.style.display = 'block';
-
-  const last = data.meta.lastBackup;
-  let msg, urgent = false;
-  if(!last){
-    msg = `Você ainda não exportou nenhum backup. ${count} alteraç${count>1?'ões':'ão'} podem se perder.`;
-    urgent = true;
-  } else {
-    const days = Math.floor((Date.now() - last) / 86400000);
-    if(days >= 3){
-      msg = `Faz ${days} dias sem backup · ${count} alteraç${count>1?'ões':'ão'} não salva${count>1?'s':''}. Exporte agora.`;
-      urgent = true;
-    } else {
-      msg = `${count} alteraç${count>1?'ões':'ão'} desde o último backup (${formatDate(last)}). Exporte pra garantir.`;
+    // 💾 SALVAR
+    function salvar() {
+      localStorage.setItem('dadosCampanha', JSON.stringify(contribuintes));
+      localStorage.setItem('despesasCampanha', JSON.stringify(despesas));
     }
-  }
-  banner.innerHTML = `<span class="dot"></span>${msg}`;
-  banner.style.display = 'flex';
-  banner.className = 'backup-alert' + (urgent ? ' urgent' : '');
-}
 
-function uid(){
-  return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-}
+    // 💰 CAIXA — CÁLCULOS
+    function atualizarCaixa() {
+      const totalGasto = despesas.reduce((soma, d) => soma + d.valor, 0);
+      const liquido = VALOR_ARRECADADO - totalGasto;
 
-function sortedContribuintes(){
-  ensureData();
-  return [...data.contribuintes].sort((a,b)=> a.nome.localeCompare(b.nome, 'pt-BR', {sensitivity:'base'}));
-}
-
-// ---------------------------------------------------------------
-// PAINEL DE ARRECADAÇÃO (topo) — funcionamento 100% inalterado.
-// A única mudança é que, ao final, guardamos o total arrecadado
-// em `ultimoTotalArrecadado` para o painel de caixa (abaixo) LER.
-// O painel de caixa nunca escreve de volta aqui.
-// ---------------------------------------------------------------
-let ultimoTotalArrecadado = 0;
-
-function render(){
-  ensureData();
-  const list = sortedContribuintes();
-  const total = list.length;
-  const monetarios = list.filter(c => !c.isento);
-  const totalMonetario = monetarios.length;
-
-  // Stairs
-  const stairsEl = document.getElementById('stairs');
-  stairsEl.innerHTML = '';
-  MONTHS.forEach(m=>{
-    const pagos = monetarios.filter(c => c.pagos[m]).length;
-    const pct = totalMonetario ? Math.round((pagos/totalMonetario)*100) : 0;
-    const step = document.createElement('div');
-    step.className = 'step' + (totalMonetario && pagos===totalMonetario ? ' done' : '');
-    step.innerHTML = `
-      <div class="label">${MONTH_LABELS[m]}</div>
-      <div class="pct">${pct}%</div>
-      <div class="fill" style="height:${pct}%"></div>
-    `;
-    stairsEl.appendChild(step);
-  });
-
-  // Summary cards
-  const summaryEl = document.getElementById('summary');
-  let cardsHtml = '';
-  MONTHS.forEach(m=>{
-    const pagos = monetarios.filter(c => c.pagos[m]).length;
-    const faltam = totalMonetario - pagos;
-    const arrecadado = pagos * VALOR_MES;
-    const meta = totalMonetario * VALOR_MES;
-    const restante = meta - arrecadado;
-    cardsHtml += `
-      <div class="card">
-        <div class="label">${MONTH_LABELS[m]}</div>
-        <div class="value">R$ ${arrecadado}</div>
-        <div class="label" style="margin-top:2px;">meta R$ ${meta} · faltam R$ ${restante}</div>
-        <div class="label" style="margin-top:4px; color:var(--moss); font-weight:700;">${pagos} contribuíram · ${faltam} faltam</div>
-      </div>`;
-  });
-  const totalGeral = MONTHS.reduce((sum,m)=> sum + monetarios.filter(c=>c.pagos[m]).length * VALOR_MES, 0);
-  const metaGeral = totalMonetario * VALOR_MES * 3;
-  cardsHtml += `
-    <div class="card total">
-      <div class="label">Total geral (3 meses)</div>
-      <div class="value">R$ ${totalGeral} <span style="font-size:14px; font-weight:500;">/ R$ ${metaGeral}</span></div>
-    </div>`;
-  summaryEl.innerHTML = cardsHtml;
-
-  // guarda o total arrecadado para o painel de caixa ler (não altera nada acima)
-  ultimoTotalArrecadado = totalGeral;
-
-  // List
-  document.getElementById('count-label').textContent = total + (total===1 ? ' pessoa' : ' pessoas');
-  const listEl = document.getElementById('list');
-  const emptyEl = document.getElementById('empty-msg');
-  listEl.innerHTML = '';
-  if(total===0){
-    emptyEl.style.display = 'block';
-  } else {
-    emptyEl.style.display = 'none';
-    list.forEach(c=>{
-      const li = document.createElement('li');
-      li.className = c.isento ? 'isento' : '';
-      const chks = MONTHS.map(m => `<div class="chk ${c.pagos[m]?'checked':''}" data-id="${c.id}" data-mes="${m}">${c.pagos[m]?'✓':''}</div>`).join('');
-      const obsHtml = c.obs ? `<div class="obs">${escapeHtml(c.obs)}${c.isento ? ' · isento em dinheiro' : ''}</div>` : (c.isento ? `<div class="obs">isento em dinheiro</div>` : '');
-      li.innerHTML = `
-        <div class="name-wrap">
-          <div class="name" title="${escapeHtml(c.nome)}">${escapeHtml(c.nome)}</div>
-          ${obsHtml}
-        </div>
-        ${chks}
-        <button class="edit-btn" data-id="${c.id}" aria-label="Editar">✎</button>
-        <button class="del-btn" data-id="${c.id}" aria-label="Remover">✕</button>
-      `;
-      listEl.appendChild(li);
-    });
-  }
-
-  updateBackupBanner();
-  renderCaixa();
-}
-
-function escapeHtml(str){
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
-}
-
-function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(()=> t.classList.remove('show'), 2200);
-}
-
-// Add contributor
-document.getElementById('add-btn').addEventListener('click', addContribuinte);
-document.getElementById('new-name').addEventListener('keydown', e=>{
-  if(e.key === 'Enter') addContribuinte();
-});
-function addContribuinte(){
-  ensureData();
-  const input = document.getElementById('new-name');
-  const nome = input.value.trim();
-  if(!nome) return;
-  data.contribuintes.push({ id: uid(), nome, obs:'', isento:false, pagos:{jun:false,jul:false,ago:false} });
-  markDirty();
-  save();
-  input.value = '';
-  render();
-  showToast('Contribuinte adicionado');
-}
-
-// Delegate clicks on checkboxes / delete
-document.getElementById('list').addEventListener('click', e=>{
-  ensureData();
-  const chk = e.target.closest('.chk');
-  if(chk){
-    const c = data.contribuintes.find(x=>x.id===chk.dataset.id);
-    if(c){
-      c.pagos[chk.dataset.mes] = !c.pagos[chk.dataset.mes];
-      markDirty();
-      save();
-      render();
+      document.getElementById('valorBruto').textContent = 
+        `R$ ${VALOR_ARRECADADO.toFixed(2).replace('.', ',')}`;
+      document.getElementById('valorGasto').textContent = 
+        `R$ ${totalGasto.toFixed(2).replace('.', ',')}`;
+      document.getElementById('valorLiquido').textContent = 
+        `R$ ${liquido.toFixed(2).replace('.', ',')}`;
+      document.getElementById('qtdItens').textContent = 
+        `${despesas.length} item${despesas.length !== 1 ? 'ens' : ''}`;
     }
-    return;
-  }
-  const edit = e.target.closest('.edit-btn');
-  if(edit){
-    const c = data.contribuintes.find(x=>x
+
+    // ➕ ADICIONAR DESPESA
+    function adicionarDespesa() {
+      const nome = document.getElementById('nomeItem').value.trim();
+      const valor = parseFloat(document.getElementById('valorItem').value);
+      
+      if (!nome) return alert('Digite o nome do item!');
+      if (isNaN(valor) || valor <= 0) return alert('Digite um valor válido!');
+
+      despesas.push({ nome, valor });
+      document.getElementById('nomeItem').value = '';
+      document.getElementById('valorItem').value = '';
+      
+      salvar();
+      atualizarCaixa();
+      renderizarListaDespesas();
+    }
+
+    // 🗑️ EXCLUIR DESPESA
+    function excluirDespesa(indice) {
+      despesas.splice(indice, 1);
+      salvar();
+      atualizarCaixa();
+      renderizarListaDespesas();
+    }
+
+    // 📄 LISTA DESPESAS
+    function renderizarListaDespesas() {
+      const lista = document.getElementById('listaDespesas');
+      
+      if (despesas.length === 0) {
+        lista.innerHTML = '<p class="sem-dados">Nenhuma despesa registrada ainda.</p>';
+        return;
+      }
+
+      lista.innerHTML = '';
+      despesas.forEach((d, i) => {
+        const item = document.createElement('div');
+        item.className = 'item-despesa';
+        item.innerHTML = `
+          <span>${d.nome}</span>
+          <span class="valor">R$ ${d.valor.toFixed(2).replace('.', ',')}</span>
+          <button class="btn-excluir-item" onclick="excluirDespesa(${i})">✕</button>
+        `;
+        lista.appendChild(item);
+      });
+    }
+
+    // 📄 LISTA CONTRIBUINTES
+    function renderizarLista() {
+      const lista = document.getElementById('listaContribuintes');
+      lista.innerHTML = '';
+
+      contribuintes.forEach((pessoa, indice) => {
+        const linha = document.createElement('div');
+        linha.className = `linha-contribuinte ${pessoa.isento ? 'isento' : ''}`;
+
+        linha.innerHTML = `
+          <div>
+            <div class="nome">${pessoa.nome}</div>
+            ${pessoa.sub ? `<div class="subnome">${pessoa.sub}</div>` : ''}
+          </div>
+          <div class="check-mes ${pessoa.jun ? 'checado' : ''}" onclick="trocarMes(${indice}, 'jun')">
+            ${pessoa.jun ? '✓' : ''}
+          </div>
+          <div class="check-mes ${pessoa.jul ? 'checado' : ''}" onclick="trocarMes(${indice}, 'jul')">
+            ${pessoa.jul ? '✓' : ''}
+          </div>
+          <div class="check-mes ${pessoa.ago ? 'checado' : ''}" onclick="trocarMes(${indice}, 'ago')">
+            ${pessoa.ago ? '✓' : ''}
+          </div>
+          <div class="acoes">
+            <button class="btn-editar">✏️</button>
+            <button class="btn-excluir" onclick="excluirPessoa(${indice})">✕</button>
+          </div>
+        `;
+        lista.appendChild(linha);
+      });
+    }
+
+    // ✅ MARCAR / DESMARCAR MÊS
+    function trocarMes(indice, mes) {
+      contribuintes[indice][mes] = !contribuintes[indice][mes];
+      salvar();
+      renderizarLista();
+    }
+
+    // ➕ ADICIONAR CONTRIBUINTE
+    function adicionarContribuinte() {
+      const nome = document.getElementById('novoNome').value.trim();
+      if (!nome) return alert('Digite um nome!');
+      
+      contribuintes.push({
+        nome: nome,
+        jun: false, jul: false, ago: false, isento: false
+      });
+      
+      document.getElementById('novoNome').value = '';
+      salvar();
+      renderizarLista();
+    }
+
+    // 🗑️ EXCLUIR CONTRIBUINTE
+    function excluirPessoa(indice) {
+      if (!confirm('Excluir esse contribuinte?')) return;
+      contribuintes.splice(indice, 1);
+      salvar();
+      renderizarLista();
+    }
+
+    // 💾 BACKUP COMPLETO
+    function exportarBackup() {
+      const dados = { contribuintes, despesas };
+      const blob = new Blob([JSON.stringify(dados, null, 2)], {type: 'application/json'});
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'backup-campanha-completo.json';
+      link.click();
+    }
+
+    function importa
