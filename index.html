@@ -318,7 +318,11 @@
 
 <script>
 window.addEventListener('error', function(e){
-  alert('ERRO DETECTADO:\n' + e.message + '\nLinha: ' + e.lineno + '\nArquivo: ' + e.filename);
+  document.title = 'ERRO: ' + e.message;
+  const d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:20px;z-index:99999;font-size:14px;';
+  d.textContent = 'ERRO: ' + e.message + ' (linha ' + e.lineno + ')';
+  document.body.appendChild(d);
 });
 
 const STORAGE_KEY = "sacrificio2026";
@@ -521,7 +525,8 @@ document.getElementById('new-name').addEventListener('keydown', e=>{
   if(e.key === 'Enter') addContribuinte();
 });
 function addContribuinte(){
-  alert('Botao Adicionar foi clicado!');
+  document.title = 'CLIQUE DETECTADO - ' + Date.now();
+  document.getElementById('count-label').textContent = 'BOTAO FUNCIONOU!';
   ensureData();
   const input = document.getElementById('new-name');
   const nome = input.value.trim();
@@ -554,12 +559,4 @@ document.getElementById('list').addEventListener('click', e=>{
     if(c){
       const novoNome = prompt('Corrigir nome:', c.nome);
       if(novoNome !== null && novoNome.trim()){
-        c.nome = novoNome.trim();
-      } else if(novoNome === null){
-        return; // cancelou tudo
-      }
-      const novaObs = prompt('Observação (opcional, ex: vai doar cimento). Deixe em branco pra remover:', c.obs || '');
-      if(novaObs !== null){
-        c.obs = novaObs.trim();
-      }
-      c.isento = confirm('Marcar como 
+        c.nome = novoNome.tri
