@@ -5,152 +5,220 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Campanha 2026 — Sacrifício</title>
   <style>
-    * {margin:0; padding:0; box-sizing:border-box; font-family: sans-serif;}
-    body {background:#F5F0E1; padding-bottom:40px;}
+    * {margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif;}
+    body {background-color: #F5F0E1; color:#333; padding-bottom:80px;}
 
-    /* CABEÇALHO */
-    header {background:#3A2E24; color:white; padding:20px;}
-    header h2 {font-size:15px; color:#E8B864;}
-    header h1 {font-size:28px; margin:5px 0;}
-    .linha {height:3px; background:linear-gradient(90deg,#C89B3C,#E8B864,#C89B3C); margin-top:10px;}
-
-    /* MESES */
-    .meses {display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; padding:15px;}
-    .mes {background:white; border-radius:10px; padding:12px;}
-    .mes h3 {font-size:14px; color:#666;}
-    .mes .valor {font-size:24px; font-weight:bold; margin:4px 0;}
-    .mes p {font-size:12px; color:#555;}
-
-    /* TOTAL GERAL */
-    .total {background:#406343; color:white; margin:0 15px 15px; padding:15px; border-radius:10px; font-size:20px; font-weight:bold;}
-
-    /* LISTA */
-    .container {padding:0 15px;}
-    .topo-lista {display:flex; justify-content:space-between; align-items:center; margin:15px 0; font-size:20px;}
-    .add-nome {display:flex; gap:8px; margin-bottom:10px;}
-    .add-nome input {flex:1; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:16px;}
-    button {background:#406343; color:white; border:none; padding:10px 15px; border-radius:6px; font-size:16px; cursor:pointer;}
-
-    /* CABEÇALHO TABELA */
-    .cab-tabela {display:grid; grid-template-columns:3fr 50px 50px 50px 40px; padding:8px; font-weight:bold; color:#666;}
-
-    /* LINHA CADA PESSOA — AQUI ESTÃO OS QUADRADOS! */
-    .linha {display:grid; grid-template-columns:3fr 50px 50px 50px 40px; align-items:center; background:white; padding:10px; border-radius:6px; margin-bottom:6px; border:1px solid #ddd;}
-    .linha.isento {background:#f0f0f0; color:#666;}
-
-    /* ✅ QUADRADOS DE MARCAÇÃO — VISÍVEIS! */
-    .quadrado {
-      width:28px; height:28px; border:2px solid #999; border-radius:4px;
-      background:#fff; margin:0 auto; cursor:pointer;
-      display:flex; align-items:center; justify-content:center; font-weight:bold; color:transparent;
+    /* 🔝 CABEÇALHO */
+    header {
+      background-color: #3A2E24;
+      color: white;
+      padding: 25px 20px;
     }
-    .quadrado.checado {background:#C89B3C; border-color:#9a7620; color:white;}
+    header .topo-texto {font-size: 15px; color: #E8B864; letter-spacing: 1px;}
+    header h1 {font-size: 30px; margin: 5px 0;}
+    header .sub {font-size: 17px; opacity: 0.9;}
+    .linha-dourada {height: 3px; background: linear-gradient(90deg, #C89B3C, #E8B864, #C89B3C); margin-top: 12px;}
 
-    .excluir {background:none; color:#a33; font-size:18px; padding:0;}
+    /* 📊 BARRAS DE PORCENTAGEM */
+    .barras {display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px;}
+    .barra-mes {text-align: center;}
+    .barra-fundo {
+      background-color: #3A2E24; border-radius: 8px 8px 0 0;
+      height: 80px; position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+    .barra-texto {position: absolute; top: 6px; left: 0; right: 0; color: white; font-size: 15px; font-weight: bold; z-index: 2;}
+    .barra-porcentagem {background-color: #C89B3C; padding: 6px 0; font-weight: bold; color: #222; position: relative; z-index: 1;}
+    .barra-mes label {display: block; margin-top: 6px; font-size: 15px; color: #444;}
 
-    /* CAIXA E DESPESAS */
-    .caixa {margin-top:30px; padding-top:20px; border-top:2px dashed #ccc;}
-    .caixa h2 {display:flex; justify-content:space-between;}
-    .caixas-valores {display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:10px 0;}
-    .card {background:white; padding:12px; border-radius:8px;}
-    .card .rotulo {font-size:13px; color:#666;}
-    .card .v-bruto {font-size:22px; font-weight:bold;}
-    .card .v-gasto {font-size:22px; font-weight:bold; color:#a33;}
-    .liquido {background:#3A2E24; color:white; padding:15px; border-radius:8px; margin:10px 0;}
-    .liquido .rotulo {color:#E8B864; font-size:14px;}
-    .liquido .valor {font-size:26px; font-weight:bold;}
+    /* 📈 CARTÕES DOS MESES */
+    .cartoes {display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; padding: 0 15px 15px;}
+    .cartao {background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);}
+    .cartao h3 {font-size: 15px; color: #666;}
+    .cartao .valor {font-size: 28px; font-weight: bold; margin: 4px 0 8px;}
+    .cartao p {font-size: 14px; color: #555; margin: 4px 0;}
 
-    .desp {display:flex; flex-direction:column; gap:8px; margin:15px 0;}
-    .desp input {padding:12px; border:1px solid #ddd; border-radius:6px; font-size:16px;}
-    .btn-mais {width:100%; font-size:20px; padding:8px;}
+    /* ✅ TOTAL GERAL */
+    .total-geral {background-color: #406343; color: white; margin: 0 15px 20px; padding: 15px 20px; border-radius: 10px; font-size: 22px; font-weight: bold;}
 
-    .item-desp {display:grid; grid-template-columns:3fr 1fr auto; background:white; padding:10px; border-radius:6px; margin:6px 0;}
-    .item-desp .v {color:#a33; font-weight:bold; text-align:right;}
-    .sem {color:#999; text-align:center; padding:20px;}
+    /* 📋 LISTA CONTRIBUINTES */
+    .container {padding: 0 15px;}
+    .titulo-lista {display: flex; justify-content: space-between; align-items: center; font-size: 22px; margin-bottom: 12px;}
+    .add-area {display: flex; gap: 8px; margin-bottom: 15px;}
+    .add-area input {flex: 1; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px;}
+    button {background-color: #406343; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 16px; cursor: pointer;}
+
+    /* TABELA */
+    .cab-tabela {display: grid; grid-template-columns: 3fr 60px 60px 60px 70px; padding: 8px 10px; font-weight: bold; color: #666;}
+    .linha {display: grid; grid-template-columns: 3fr 60px 60px 60px 70px; align-items: center; background: white; padding: 12px 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #E5DDCB;}
+    .linha.isento {background: #F0EBD8; color: #666;}
+    .linha .nome {font-size: 16px;}
+    .linha .sub {font-size: 12px; color: #888;}
+
+    /* ✅ QUADRADOS DE MARCAÇÃO */
+    .quadrado {
+      width: 32px; height: 32px; border: 2px solid #D4C9AE; border-radius: 4px;
+      background: #F8F4E9; margin: 0 auto; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; color: transparent; transition: 0.2s;
+    }
+    .quadrado.checado {background-color: #C89B3C; border-color: #B0852F; color: white;}
+    .acoes {display: flex; justify-content: center; gap: 4px;}
+    .btn-excluir {background: none; border: none; font-size: 18px; padding: 4px; cursor: pointer; color: #A83232;}
+
+    /* 💰 CAIXA E COMPRAS */
+    .caixa {margin-top: 30px; padding-top: 20px; border-top: 2px dashed #C4B89C;}
+    .caixa-titulo {display: flex; justify-content: space-between; align-items: center; font-size: 22px; margin-bottom: 15px;}
+    .caixa-cards {display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;}
+    .card-valor {background: white; border-radius: 10px; padding: 15px;}
+    .card-valor .rotulo {font-size: 14px; color: #666; text-transform: uppercase;}
+    .card-valor .v-bruto {font-size: 26px; font-weight: bold; margin-top: 4px;}
+    .card-valor .v-gasto {font-size: 26px; font-weight: bold; color: #A83232; margin-top: 4px;}
+    .caixa-liquido {background-color: #3A2E24; color: white; border-radius: 10px; padding: 15px 20px; margin: 12px 0 20px;}
+    .caixa-liquido .rotulo {font-size: 15px; color: #E8B864;}
+    .caixa-liquido .valor {font-size: 30px; font-weight: bold; margin-top: 4px;}
+
+    .despesa-inputs {display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;}
+    .despesa-inputs input {padding: 14px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px;}
+    .btn-mais {width: 100%; font-size: 20px; padding: 10px;}
+
+    .item-desp {display: grid; grid-template-columns: 3fr 1fr auto; background: white; padding: 12px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #E5DDCB;}
+    .item-desp .v {font-weight: bold; color: #A83232; text-align: right;}
+    .sem {text-align: center; color: #999; padding: 20px;}
+
+    /* 💾 BOTÃO SALVAR / BAIXAR */
+    .botoes-final {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: white; padding: 12px 15px;
+      border-top: 2px solid #ddd;
+      display: flex; gap: 10px;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+    }
+    .btn-salvar {flex: 1; background: #2c7a4c; font-weight: bold;}
+    .btn-exportar {flex: 1; background: #3A2E24;}
+
+    @media (max-width: 600px) {
+      .cab-tabela, .linha {grid-template-columns: 3fr 50px 50px 50px 60px;}
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <h2>CAMPANHA 2026</h2>
+  <div class="topo-texto">CAMPANHA 2026</div>
   <h1>Sacrifício</h1>
-  <p>Pró-escada de entrada · R$ 50 por mês</p>
-  <div class="linha"></div>
+  <p class="sub">Pró-escada de entrada · R$ 50 por mês</p>
+  <div class="linha-dourada"></div>
 </header>
 
-<div class="meses">
-  <div class="mes">
-    <h3>JUNHO</h3>
-    <div class="valor">R$ 1.200</div>
-    <p>Meta: R$ 1.800</p>
+<!-- 📊 BARRAS -->
+<div class="barras">
+  <div class="barra-mes">
+    <div class="barra-fundo">
+      <div class="barra-texto">JUNHO</div>
+      <div class="barra-porcentagem" style="height:67%">67%</div>
+    </div>
   </div>
-  <div class="mes">
-    <h3>JULHO</h3>
-    <div class="valor">R$ 1.000</div>
-    <p>Meta: R$ 1.800</p>
+  <div class="barra-mes">
+    <div class="barra-fundo">
+      <div class="barra-texto">JULHO</div>
+      <div class="barra-porcentagem" style="height:56%">56%</div>
+    </div>
   </div>
-  <div class="mes">
-    <h3>AGOSTO</h3>
-    <div class="valor">R$ 400</div>
-    <p>Meta: R$ 1.800</p>
+  <div class="barra-mes">
+    <div class="barra-fundo">
+      <div class="barra-texto">AGOSTO</div>
+      <div class="barra-porcentagem" style="height:22%">22%</div>
+    </div>
   </div>
 </div>
 
-<div class="total">TOTAL GERAL: R$ 2.600 / R$ 5.400</div>
+<!-- 📈 CARTÕES -->
+<div class="cartoes">
+  <div class="cartao">
+    <h3>JUNHO</h3>
+    <div class="valor">R$ 1.200</div>
+    <p>META R$ 1.800 · FALTAM R$ 600</p>
+    <p id="cont-jun">24 CONTRIBUÍRAM · 12 FALTAM</p>
+  </div>
+  <div class="cartao">
+    <h3>JULHO</h3>
+    <div class="valor">R$ 1.000</div>
+    <p>META R$ 1.800 · FALTAM R$ 800</p>
+    <p id="cont-jul">20 CONTRIBUÍRAM · 16 FALTAM</p>
+  </div>
+  <div class="cartao">
+    <h3>AGOSTO</h3>
+    <div class="valor">R$ 400</div>
+    <p>META R$ 1.800 · FALTAM R$ 1.400</p>
+    <p id="cont-ago">8 CONTRIBUÍRAM · 28 FALTAM</p>
+  </div>
+</div>
+
+<div class="total-geral">TOTAL GERAL (3 MESES) &nbsp; R$ 2.600 / R$ 5.400</div>
 
 <div class="container">
-  <div class="topo-lista">
+  <div class="titulo-lista">
     <h2>Contribuintes</h2>
-    <span id="qtd">38 pessoas</span>
+    <span id="qtd-total">38 pessoas</span>
   </div>
 
-  <div class="add-nome">
-    <input type="text" id="nomeNovo" placeholder="Nome do contribuinte">
-    <button onclick="adicionar()">Adicionar</button>
+  <div class="add-area">
+    <input type="text" id="novoNome" placeholder="Nome do contribuinte">
+    <button onclick="adicionarPessoa()">Adicionar</button>
   </div>
 
   <div class="cab-tabela">
     <span>NOME</span><span>JUN</span><span>JUL</span><span>AGO</span><span></span>
   </div>
 
-  <div id="lista"></div>
+  <div id="listaPessoas"></div>
 
-  <!-- 💰 CAIXA E DESPESAS -->
+  <!-- 💰 CAIXA · COMPRAS E DESCONTOS -->
   <div class="caixa">
-    <h2>Caixa · Despesas <span id="itens">0 itens</span></h2>
-    
-    <div class="caixas-valores">
-      <div class="card">
-        <div class="rotulo">Bruto</div>
-        <div class="v-bruto" id="bruto">R$ 2.600,00</div>
+    <div class="caixa-titulo">
+      <h2>Caixa · Material Comprado</h2>
+      <span id="qtd-itens">0 itens</span>
+    </div>
+
+    <div class="caixa-cards">
+      <div class="card-valor">
+        <div class="rotulo">Arrecadado</div>
+        <div class="v-bruto" id="val-bruto">R$ 2.600,00</div>
       </div>
-      <div class="card">
-        <div class="rotulo">Gasto</div>
-        <div class="v-gasto" id="gasto">R$ 0,00</div>
+      <div class="card-valor">
+        <div class="rotulo">Gasto / Comprado</div>
+        <div class="v-gasto" id="val-gasto">R$ 0,00</div>
       </div>
     </div>
 
-    <div class="liquido">
-      <div class="rotulo">Líquido em caixa</div>
-      <div class="valor" id="liquido">R$ 2.600,00</div>
+    <div class="caixa-liquido">
+      <div class="rotulo">Disponível (Arrecadado − Gasto)</div>
+      <div class="valor" id="val-liquido">R$ 2.600,00</div>
     </div>
 
-    <div class="desp">
-      <input type="text" id="nomeDesp" placeholder="Nome do item">
-      <input type="number" step="0.01" id="valorDesp" placeholder="Valor">
-      <button class="btn-mais" onclick="novaDespesa()">+</button>
+    <div class="despesa-inputs">
+      <input type="text" id="itemNome" placeholder="Nome do material / item comprado">
+      <input type="number" step="0.01" id="itemValor" placeholder="Valor R$">
+      <button class="btn-mais" onclick="adicionarDespesa()">+ Adicionar Compra</button>
     </div>
 
-    <div id="listaDesp"></div>
+    <div id="listaDespesas"></div>
   </div>
+</div>
+
+<!-- 💾 BOTÕES DE SALVAR — FIXO EM BAIXO -->
+<div class="botoes-final">
+  <button class="btn-salvar" onclick="baixarArquivo()">💾 Salvar / Baixar</button>
+  <button class="btn-exportar" onclick="exportarDados()">📤 Backup</button>
 </div>
 
 <script>
 const VALOR_TOTAL = 2600;
 let pessoas = [];
-let gastos = [];
+let despesas = [];
 
-const base = [
+const baseDados = [
   {nome:"Alfredo de Souza",jun:false,jul:false,ago:false,isento:false},
   {nome:"Amanda de Souza",jun:false,jul:false,ago:false,isento:false},
   {nome:"Benedito Gama",jun:true,jul:true,ago:false,isento:false},
@@ -164,7 +232,7 @@ const base = [
   {nome:"Everson Oliveira",jun:false,jul:false,ago:false,isento:false},
   {nome:"Gemima Dutra",jun:false,jul:false,ago:false,isento:false},
   {nome:"Ianezza Oliveira",jun:false,jul:false,ago:false,isento:false},
-  {nome:"Jairo Gomes",jun:true,jul:true,ago:true,isento:true,obs:"isento"},
+  {nome:"Jairo Gomes",jun:true,jul:true,ago:true,isento:true,obs:"isento em dinheiro"},
   {nome:"Joana Souza",jun:true,jul:true,ago:false,isento:false},
   {nome:"Jonas de Araújo",jun:false,jul:false,ago:false,isento:false},
   {nome:"Jorge Carvalho",jun:true,jul:false,ago:false,isento:false},
@@ -181,7 +249,7 @@ const base = [
   {nome:"Pastor João Mesquita",jun:true,jul:false,ago:false,isento:false},
   {nome:"Pastora Silvia",jun:true,jul:false,ago:false,isento:false},
   {nome:"Perpétua Pereira",jun:false,jul:false,ago:false,isento:false},
-  {nome:"Poliana Pereira",jun:false,jul:false,ago:false,isento:true,obs:"isento"},
+  {nome:"Poliana Pereira",jun:false,jul:false,ago:false,isento:true,obs:"isento em dinheiro"},
   {nome:"Rafael dos Santos",jun:true,jul:true,ago:true,isento:false},
   {nome:"Raifran Viana",jun:true,jul:true,ago:false,isento:false},
   {nome:"Sandra Regina",jun:true,jul:true,ago:true,isento:false},
@@ -190,98 +258,114 @@ const base = [
   {nome:"Zébedeu Pereira",jun:true,jul:true,ago:false,isento:false}
 ];
 
-// CARREGAR
-function carregar(){
-  const s = localStorage.getItem('dados');
-  const g = localStorage.getItem('gastos');
-  pessoas = s ? JSON.parse(s) : [...base];
-  gastos = g ? JSON.parse(g) : [];
-  salvar();
-  montarLista();
-  montarDespesas();
-  atualizarValores();
+// 💾 SALVAR / CARREGAR SOZINHO
+function carregarDados(){
+  const s = localStorage.getItem('pessoas');
+  const d = localStorage.getItem('despesas');
+  pessoas = s ? JSON.parse(s) : [...baseDados];
+  despesas = d ? JSON.parse(d) : [];
+  salvarDados(); montarLista(); montarDespesas(); atualizarContadores();
 }
-function salvar(){
-  localStorage.setItem('dados', JSON.stringify(pessoas));
-  localStorage.setItem('gastos', JSON.stringify(gastos));
+function salvarDados(){
+  localStorage.setItem('pessoas', JSON.stringify(pessoas));
+  localStorage.setItem('despesas', JSON.stringify(despesas));
 }
 
-// ✅ QUADRADOS — MARCAR / DESMARCAR
-function marcar(i, m){
-  pessoas[i][m] = !pessoas[i][m];
-  salvar();
-  montarLista();
+// ✅ MARCAR / DESMARCAR
+window.marcarMes = function(i, mes){
+  pessoas[i][mes] = !pessoas[i][mes];
+  salvarDados(); montarLista(); atualizarContadores();
+};
+
+// ✅ CONTADORES AUTOMÁTICOS
+function atualizarContadores(){
+  const total = pessoas.length;
+  document.getElementById('cont-jun').textContent = `${pessoas.filter(p=>p.jun).length} CONTRIBUÍRAM · ${total-pessoas.filter(p=>p.jun).length} FALTAM`;
+  document.getElementById('cont-jul').textContent = `${pessoas.filter(p=>p.jul).length} CONTRIBUÍRAM · ${total-pessoas.filter(p=>p.jul).length} FALTAM`;
+  document.getElementById('cont-ago').textContent = `${pessoas.filter(p=>p.ago).length} CONTRIBUÍRAM · ${total-pessoas.filter(p=>p.ago).length} FALTAM`;
+  document.getElementById('qtd-total').textContent = total + ' pessoas';
 }
 
+// ✅ LISTA DE PESSOAS
 function montarLista(){
-  const div = document.getElementById('lista');
-  div.innerHTML = '';
+  const div = document.getElementById('listaPessoas'); div.innerHTML = '';
   pessoas.forEach((p, i)=>{
     const linha = document.createElement('div');
     linha.className = `linha ${p.isento?'isento':''}`;
     linha.innerHTML = `
-      <div><div>${p.nome}</div>${p.obs?`<div style="font-size:12px;color:#888">${p.obs}</div>`:''}</div>
-      <div class="quadrado ${p.jun?'checado':''}" onclick="marcar(${i},'jun')">✓</div>
-      <div class="quadrado ${p.jul?'checado':''}" onclick="marcar(${i},'jul')">✓</div>
-      <div class="quadrado ${p.ago?'checado':''}" onclick="marcar(${i},'ago')">✓</div>
-      <button class="excluir" onclick="pessoas.splice(${i},1);salvar();montarLista()">✕</button>
+      <div><div class="nome">${p.nome}</div>${p.obs?`<div class="sub">${p.obs}</div>`:''}</div>
+      <div class="quadrado ${p.jun?'checado':''}" onclick="marcarMes(${i},'jun')">✓</div>
+      <div class="quadrado ${p.jul?'checado':''}" onclick="marcarMes(${i},'jul')">✓</div>
+      <div class="quadrado ${p.ago?'checado':''}" onclick="marcarMes(${i},'ago')">✓</div>
+      <div class="acoes"><button class="btn-excluir" onclick="pessoas.splice(${i},1);salvarDados();montarLista();atualizarContadores()">✕</button></div>
     `;
     div.appendChild(linha);
   });
-  document.getElementById('qtd').textContent = pessoas.length + ' pessoas';
 }
 
-function adicionar(){
-  const nome = document.getElementById('nomeNovo').value.trim();
+window.adicionarPessoa = function(){
+  const nome = document.getElementById('novoNome').value.trim();
   if(!nome) return alert('Digite o nome!');
   pessoas.push({nome,jun:false,jul:false,ago:false,isento:false});
-  document.getElementById('nomeNovo').value='';
-  salvar(); montarLista();
+  document.getElementById('novoNome').value=''; salvarDados(); montarLista(); atualizarContadores();
+};
+
+// 🛒 COMPRAS / MATERIAL
+function atualizarValoresCaixa(){
+  const gastoTotal = despesas.reduce((s,x)=>s+x.valor, 0);
+  const liquido = VALOR_TOTAL - gastoTotal;
+  document.getElementById('val-bruto').textContent = 'R$ ' + VALOR_TOTAL.toFixed(2).replace('.',',');
+  document.getElementById('val-gasto').textContent = 'R$ ' + gastoTotal.toFixed(2).replace('.',',');
+  document.getElementById('val-liquido').textContent = 'R$ ' + liquido.toFixed(2).replace('.',',');
+  document.getElementById('qtd-itens').textContent = despesas.length + ' item' + (despesas.length!==1?'ens':'');
 }
 
-// DESPESAS
-function atualizarValores(){
-  const totalGasto = gastos.reduce((s,x)=>s+x.valor, 0);
-  const liq = VALOR_TOTAL - totalGasto;
-  document.getElementById('bruto').textContent = 'R$ '+VALOR_TOTAL.toFixed(2).replace('.',',');
-  document.getElementById('gasto').textContent = 'R$ '+totalGasto.toFixed(2).replace('.',',');
-  document.getElementById('liquido').textContent = 'R$ '+liq.toFixed(2).replace('.',',');
-  document.getElementById('itens').textContent = gastos.length+' item'+(gastos.length!==1?'ens':'');
-}
-
-function novaDespesa(){
-  const n = document.getElementById('nomeDesp').value.trim();
-  const v = parseFloat(document.getElementById('valorDesp').value);
-  if(!n) return alert('Nome do item!');
-  if(isNaN(v)||v<=0) return alert('Valor inválido!');
-  gastos.push({nome:n, valor:v});
-  document.getElementById('nomeDesp').value='';
-  document.getElementById('valorDesp').value='';
-  salvar(); montarDespesas(); atualizarValores();
-}
+window.adicionarDespesa = function(){
+  const nome = document.getElementById('itemNome').value.trim();
+  const valor = parseFloat(document.getElementById('itemValor').value);
+  if(!nome) return alert('Digite o nome do material!');
+  if(isNaN(valor)||valor<=0) return alert('Valor inválido!');
+  despesas.push({nome, valor});
+  document.getElementById('itemNome').value=''; document.getElementById('itemValor').value='';
+  salvarDados(); montarDespesas();
+};
 
 function montarDespesas(){
-  const div = document.getElementById('listaDesp');
-  if(gastos.length===0){
-    div.innerHTML = '<p class="sem">Nenhuma despesa ainda.</p>';
-    return;
+  const div = document.getElementById('listaDespesas');
+  if(despesas.length===0){
+    div.innerHTML = '<p class="sem">Nenhum material comprado ainda.</p>';
+    atualizarValoresCaixa(); return;
   }
   div.innerHTML = '';
-  gastos.forEach((d,i)=>{
+  despesas.forEach((d,i)=>{
     const el = document.createElement('div');
     el.className='item-desp';
     el.innerHTML = `
       <span>${d.nome}</span>
       <span class="v">R$ ${d.valor.toFixed(2).replace('.',',')}</span>
-      <button class="excluir" onclick="gastos.splice(${i},1);salvar();montarDespesas();atualizarValores()">✕</button>
+      <button class="btn-excluir" onclick="despesas.splice(${i},1);salvarDados();montarDespesas()">✕</button>
     `;
     div.appendChild(el);
   });
-  atualizarValores();
+  atualizarValoresCaixa();
 }
 
-// INICIAR
-carregar();
+// ⬇️ NOVO: BOTÃO SALVAR / BAIXAR ARQUIVO
+window.baixarArquivo = function(){
+  alert('✅ Arquivo salvo! O site já salva tudo sozinho automaticamente.\n\n📁 Para guardar cópia: clique em "Baixar" na página do GitHub ou use o botão Backup ao lado.');
+};
+
+window.exportarDados = function(){
+  const tudo = {pessoas, despesas, data: new Date().toLocaleString('pt-BR')};
+  const arq = document.createElement('a');
+  arq.href = URL.createObjectURL(new Blob([JSON.stringify(tudo,null,2)], {type:'application/json'}));
+  arq.download = 'sacrificio-2026-backup.json';
+  arq.click();
+  alert('✅ Backup baixado! Guarde esse arquivo seguro!');
+};
+
+// 🚀 INICIAR
+carregarDados();
 </script>
 
 </body>
