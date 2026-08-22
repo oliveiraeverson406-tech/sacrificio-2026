@@ -216,8 +216,9 @@ let pessoas = [];
 let compras = [];
 let arquivoEscolhido = null;
 
+// ✅ ORDENAÇÃO ALFABÉTICA CORRIGIDA
 function ordenar(lista) {
-  return lista.sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+  return lista.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
 }
 
 function iniciar(){
@@ -227,13 +228,17 @@ function iniciar(){
     try {
       const obj = JSON.parse(salvo);
       if(obj.pessoas && obj.pessoas.length > 0) pessoas = ordenar(obj.pessoas);
-      if(obj.compras) compras = obj.compras;
+      if(obj.compras) compras = ordenarCompras(obj.compras); // ✅ Ordena compras também
     } catch(erro) {}
   }
   salvar();
   mostrarLista();
   mostrarCompras();
   atualizar();
+}
+
+function ordenarCompras(lista) {
+  return lista.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
 }
 
 function salvar(){
@@ -261,7 +266,6 @@ function atualizar(){
     document.getElementById(`val-${mes}`).textContent = 'R$ ' + valorMes.toLocaleString('pt-BR');
     document.getElementById(`meta-${mes}`).textContent = `META R$ ${META.toLocaleString('pt-BR')} · FALTAM R$ ${Math.max(0,falta).toLocaleString('pt-BR')}`;
     
-    // ✅ AQUI APARECE TUDO: PAGOU · FALTA
     let texto = `${pag} CONTRIBUÍRAM`;
     if(isentos > 0) texto += ` · ${isentos} ISENTO${isentos>1?'S':''}`;
     texto += ` · ${faltamPessoas} FALTAM`;
@@ -315,6 +319,7 @@ window.adicionar = function(){
 };
 
 function mostrarCompras(){
+  compras = ordenarCompras(compras); // ✅ Sempre ordena antes de mostrar
   const div = document.getElementById('listaCompras');
   if(compras.length===0){
     div.innerHTML = '<p class="sem">Nenhum material comprado ainda.</p>';
@@ -336,6 +341,7 @@ window.addCompra = function(){
   if(!nome) return alert('Digite o nome do material!');
   if(isNaN(valor) || valor <= 0) return alert('Valor inválido!');
   compras.push({nome, valor});
+  compras = ordenarCompras(compras); // ✅ Já ordena ao adicionar
   document.getElementById('nomeCompra').value='';
   document.getElementById('valorCompra').value='';
   salvar(); mostrarCompras();
@@ -375,7 +381,7 @@ window.restaurarBackup = function(){
       const obj = JSON.parse(e.target.result);
       if(!obj.pessoas) throw new Error('Formato inválido');
       pessoas = ordenar(obj.pessoas);
-      compras = obj.compras || [];
+      compras = ordenarCompras(obj.compras || []);
       salvar(); mostrarLista(); mostrarCompras(); alert('✅ Restaurado com sucesso!');
       arquivoEscolhido = null;
       document.getElementById('nomeArquivo').textContent = '📂 Escolher arquivo...';
