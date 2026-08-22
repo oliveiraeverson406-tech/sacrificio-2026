@@ -6,102 +6,99 @@
   <title>Campanha 2026 — Sacrifício</title>
   <style>
     * {margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif;}
-    body {background-color: #F5F0E1; color:#333; padding-bottom:80px;}
+    body {background-color: #F5F0E1; color:#333; padding-bottom:75px; font-size: 15px;}
 
     /* 🔝 CABEÇALHO */
     header {
       background-color: #3A2E24;
       color: white;
-      padding: 25px 20px;
+      padding: 18px 16px;
     }
-    header .topo-texto {font-size: 15px; color: #E8B864; letter-spacing: 1px;}
-    header h1 {font-size: 30px; margin: 5px 0; font-weight: 800;}
-    header .sub {font-size: 17px; opacity: 0.9;}
-    .linha-dourada {height: 3px; background: linear-gradient(90deg, #C89B3C, #E8B864, #C89B3C); margin-top: 12px;}
+    header .topo-texto {font-size: 13px; color: #E8B864; letter-spacing: 1px; font-weight: 600;}
+    header h1 {font-size: 24px; margin: 4px 0; font-weight: 900;}
+    header .sub {font-size: 15px; opacity: 0.9;}
+    .linha-dourada {height: 3px; background: linear-gradient(90deg, #C89B3C, #E8B864, #C89B3C); margin-top: 10px;}
 
-    /* 📊 BARRAS DE PORCENTAGEM */
-    .barras {display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px;}
+    /* 📊 BARRAS */
+    .barras {display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px;}
     .barra-mes {text-align: center;}
     .barra-fundo {
       background-color: #3A2E24; border-radius: 8px 8px 0 0;
-      height: 80px; position: relative; overflow: hidden;
+      height: 65px; position: relative; overflow: hidden;
       display: flex; flex-direction: column; justify-content: flex-end;
     }
-    .barra-texto {position: absolute; top: 6px; left: 0; right: 0; color: white; font-size: 15px; font-weight: bold; z-index: 2;}
-    .barra-porcentagem {background-color: #C89B3C; padding: 6px 0; font-weight: 900; font-size: 18px; color: #222; position: relative; z-index: 1;}
-    .barra-mes label {display: block; margin-top: 6px; font-size: 15px; color: #444; font-weight: 600;}
+    .barra-texto {position: absolute; top: 4px; left: 0; right: 0; color: white; font-size: 13px; font-weight: 900; z-index: 2;}
+    .barra-porcentagem {background-color: #C89B3C; padding: 4px 0; font-weight: 900; font-size: 15px; color: #222; position: relative; z-index: 1; transition: height 0.3s ease; min-height: 24px;}
 
-    /* 📈 CARTÕES DOS MESES */
-    .cartoes {display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; padding: 0 15px 15px;}
-    .cartao {background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);}
-    .cartao h3 {font-size: 15px; color: #666; font-weight: 700;}
-    .cartao .valor {font-size: 28px; font-weight: 900; margin: 4px 0 8px;}
-    /* ✅ METAS E CONTADORES — MAIS GROSSOS! */
-    .cartao p {font-size: 15px; color: #444; margin: 6px 0; font-weight: 700; line-height: 1.5;}
+    /* 📈 CARTÕES */
+    .cartoes {display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; padding: 0 12px 12px;}
+    .cartao {background: white; border-radius: 10px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);}
+    .cartao h3 {font-size: 14px; color: #666; font-weight: 800;}
+    .cartao .valor {font-size: 24px; font-weight: 900; margin: 3px 0 6px;}
+    .cartao p {font-size: 13px; color: #444; margin: 4px 0; font-weight: 700; line-height: 1.4;}
 
     /* ✅ TOTAL GERAL */
-    .total-geral {background-color: #406343; color: white; margin: 0 15px 20px; padding: 15px 20px; border-radius: 10px; font-size: 22px; font-weight: 900;}
+    .total-geral {background-color: #406343; color: white; margin: 0 12px 16px; padding: 12px 16px; border-radius: 8px; font-size: 18px; font-weight: 900;}
 
     /* 📋 LISTA CONTRIBUINTES */
-    .container {padding: 0 15px;}
-    .titulo-lista {display: flex; justify-content: space-between; align-items: center; font-size: 22px; margin-bottom: 12px; font-weight: 800;}
-    .add-area {display: flex; gap: 8px; margin-bottom: 15px;}
-    .add-area input {flex: 1; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px;}
-    button {background-color: #406343; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: 700;}
+    .container {padding: 0 12px;}
+    .titulo-lista {display: flex; justify-content: space-between; align-items: center; font-size: 20px; margin-bottom: 10px; font-weight: 900;}
+    .add-area {display: flex; gap: 8px; margin-bottom: 12px;}
+    .add-area input {flex: 1; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px;}
+    button {background-color: #406343; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-size: 15px; cursor: pointer; font-weight: 800;}
 
     /* TABELA */
-    .cab-tabela {display: grid; grid-template-columns: 3fr 60px 60px 60px 70px; padding: 8px 10px; font-weight: 900; color: #444; font-size: 15px;}
-    .linha {display: grid; grid-template-columns: 3fr 60px 60px 60px 70px; align-items: center; background: white; padding: 12px 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #E5DDCB;}
+    .cab-tabela {display: grid; grid-template-columns: 3fr 50px 50px 50px 60px; padding: 6px 8px; font-weight: 900; color: #444; font-size: 14px;}
+    .linha {display: grid; grid-template-columns: 3fr 50px 50px 50px 60px; align-items: center; background: white; padding: 10px 8px; border-radius: 6px; margin-bottom: 6px; border: 1px solid #E5DDCB;}
     .linha.isento {background: #F0EBD8; color: #666;}
-    /* ✅ NOME DO CONTRIBUINTE — MAIS GROSSO! */
-    .linha .nome {font-size: 17px; font-weight: 800;}
-    .linha .sub {font-size: 12px; color: #888; font-weight: 500;}
+    .linha .nome {font-size: 15px; font-weight: 900;}
+    .linha .sub {font-size: 11px; color: #888; font-weight: 600;}
 
-    /* ✅ QUADRADOS DE MARCAÇÃO */
+    /* ✅ QUADRADOS */
     .quadrado {
-      width: 32px; height: 32px; border: 2px solid #D4C9AE; border-radius: 4px;
+      width: 28px; height: 28px; border: 2px solid #D4C9AE; border-radius: 4px;
       background: #F8F4E9; margin: 0 auto; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 900; color: transparent; transition: 0.2s; font-size: 18px;
+      font-weight: 900; color: transparent; transition: 0.2s; font-size: 15px;
     }
     .quadrado.checado {background-color: #C89B3C; border-color: #B0852F; color: white;}
     .acoes {display: flex; justify-content: center; gap: 4px;}
-    .btn-excluir {background: none; border: none; font-size: 18px; padding: 4px; cursor: pointer; color: #A83232; font-weight: bold;}
+    .btn-excluir {background: none; border: none; font-size: 16px; padding: 2px; cursor: pointer; color: #A83232; font-weight: bold;}
 
     /* 💰 CAIXA E COMPRAS */
-    .caixa {margin-top: 30px; padding-top: 20px; border-top: 2px dashed #C4B89C;}
-    .caixa-titulo {display: flex; justify-content: space-between; align-items: center; font-size: 22px; margin-bottom: 15px; font-weight: 800;}
-    .caixa-cards {display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;}
-    .card-valor {background: white; border-radius: 10px; padding: 15px;}
-    .card-valor .rotulo {font-size: 14px; color: #666; text-transform: uppercase; font-weight: 700;}
-    .card-valor .v-bruto {font-size: 26px; font-weight: 900; margin-top: 4px;}
-    .card-valor .v-gasto {font-size: 26px; font-weight: 900; color: #A83232; margin-top: 4px;}
-    .caixa-liquido {background-color: #3A2E24; color: white; border-radius: 10px; padding: 15px 20px; margin: 12px 0 20px;}
-    .caixa-liquido .rotulo {font-size: 15px; color: #E8B864; font-weight: 700;}
-    .caixa-liquido .valor {font-size: 30px; font-weight: 900; margin-top: 4px;}
+    .caixa {margin-top: 24px; padding-top: 16px; border-top: 2px dashed #C4B89C;}
+    .caixa-titulo {display: flex; justify-content: space-between; align-items: center; font-size: 18px; margin-bottom: 12px; font-weight: 900;}
+    .caixa-cards {display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;}
+    .card-valor {background: white; border-radius: 8px; padding: 12px;}
+    .card-valor .rotulo {font-size: 13px; color: #666; text-transform: uppercase; font-weight: 700;}
+    .card-valor .v-bruto {font-size: 22px; font-weight: 900; margin-top: 3px;}
+    .card-valor .v-gasto {font-size: 22px; font-weight: 900; color: #A83232; margin-top: 3px;}
+    .caixa-liquido {background-color: #3A2E24; color: white; border-radius: 8px; padding: 12px 16px; margin: 10px 0 16px;}
+    .caixa-liquido .rotulo {font-size: 14px; color: #E8B864; font-weight: 700;}
+    .caixa-liquido .valor {font-size: 24px; font-weight: 900; margin-top: 3px;}
 
-    .despesa-inputs {display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;}
-    .despesa-inputs input {padding: 14px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px;}
-    .btn-mais {width: 100%; font-size: 20px; padding: 10px; font-weight: 800;}
+    .despesa-inputs {display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;}
+    .despesa-inputs input {padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px;}
+    .btn-mais {width: 100%; font-size: 16px; padding: 10px; font-weight: 900;}
 
-    .item-desp {display: grid; grid-template-columns: 3fr 1fr auto; background: white; padding: 12px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #E5DDCB;}
-    .item-desp span {font-weight: 700;}
-    .item-desp .v {font-weight: 900; color: #A83232; text-align: right; font-size: 16px;}
-    .sem {text-align: center; color: #999; padding: 20px; font-weight: 600;}
+    .item-desp {display: grid; grid-template-columns: 3fr 1fr auto; background: white; padding: 10px; border-radius: 6px; margin-bottom: 4px; border: 1px solid #E5DDCB;}
+    .item-desp span {font-weight: 700; font-size: 14px;}
+    .item-desp .v {font-weight: 900; color: #A83232; text-align: right; font-size: 15px;}
+    .sem {text-align: center; color: #999; padding: 16px; font-weight: 600; font-size: 14px;}
 
-    /* 💾 BOTÕES DE SALVAR — FIXO EM BAIXO */
+    /* 💾 BOTÕES */
     .botoes-final {
       position: fixed; bottom: 0; left: 0; right: 0;
-      background: white; padding: 12px 15px;
+      background: white; padding: 10px 12px;
       border-top: 2px solid #ddd;
       display: flex; gap: 10px;
       box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
     }
-    .btn-salvar {flex: 1; background: #2c7a4c; font-weight: 900;}
-    .btn-exportar {flex: 1; background: #3A2E24; font-weight: 900;}
+    .btn-salvar {flex: 1; background: #2c7a4c; font-weight: 900; font-size: 15px; padding: 10px;}
+    .btn-exportar {flex: 1; background: #3A2E24; font-weight: 900; font-size: 15px; padding: 10px;}
 
     @media (max-width: 600px) {
-      .cab-tabela, .linha {grid-template-columns: 3fr 50px 50px 50px 60px;}
+      .cab-tabela, .linha {grid-template-columns: 3fr 45px 45px 45px 55px;}
     }
   </style>
 </head>
@@ -119,51 +116,51 @@
   <div class="barra-mes">
     <div class="barra-fundo">
       <div class="barra-texto">JUNHO</div>
-      <div class="barra-porcentagem" style="height:67%">67%</div>
+      <div class="barra-porcentagem" id="barra-jun">0%</div>
     </div>
   </div>
   <div class="barra-mes">
     <div class="barra-fundo">
       <div class="barra-texto">JULHO</div>
-      <div class="barra-porcentagem" style="height:56%">56%</div>
+      <div class="barra-porcentagem" id="barra-jul">0%</div>
     </div>
   </div>
   <div class="barra-mes">
     <div class="barra-fundo">
       <div class="barra-texto">AGOSTO</div>
-      <div class="barra-porcentagem" style="height:22%">22%</div>
+      <div class="barra-porcentagem" id="barra-ago">0%</div>
     </div>
   </div>
 </div>
 
-<!-- 📈 CARTÕES → METAS E CONTADORES MAIS GROSSOS -->
+<!-- 📈 CARTÕES -->
 <div class="cartoes">
   <div class="cartao">
     <h3>JUNHO</h3>
-    <div class="valor">R$ 1.200</div>
-    <p>META R$ 1.800 · FALTAM R$ 600</p>
-    <p id="cont-jun">24 CONTRIBUÍRAM · 12 FALTAM</p>
+    <div class="valor" id="val-jun">R$ 0</div>
+    <p id="meta-jun">META R$ 1.800 · FALTAM R$ 1.800</p>
+    <p id="cont-jun">0 CONTRIBUÍRAM · 0 FALTAM</p>
   </div>
   <div class="cartao">
     <h3>JULHO</h3>
-    <div class="valor">R$ 1.000</div>
-    <p>META R$ 1.800 · FALTAM R$ 800</p>
-    <p id="cont-jul">20 CONTRIBUÍRAM · 16 FALTAM</p>
+    <div class="valor" id="val-jul">R$ 0</div>
+    <p id="meta-jul">META R$ 1.800 · FALTAM R$ 1.800</p>
+    <p id="cont-jul">0 CONTRIBUÍRAM · 0 FALTAM</p>
   </div>
   <div class="cartao">
     <h3>AGOSTO</h3>
-    <div class="valor">R$ 400</div>
-    <p>META R$ 1.800 · FALTAM R$ 1.400</p>
-    <p id="cont-ago">8 CONTRIBUÍRAM · 28 FALTAM</p>
+    <div class="valor" id="val-ago">R$ 0</div>
+    <p id="meta-ago">META R$ 1.800 · FALTAM R$ 1.800</p>
+    <p id="cont-ago">0 CONTRIBUÍRAM · 0 FALTAM</p>
   </div>
 </div>
 
-<div class="total-geral">TOTAL GERAL (3 MESES) &nbsp; R$ 2.600 / R$ 5.400</div>
+<div class="total-geral" id="total-geral">TOTAL GERAL · R$ 0 / R$ 5.400</div>
 
 <div class="container">
   <div class="titulo-lista">
     <h2>Contribuintes</h2>
-    <span id="qtd-total">38 pessoas</span>
+    <span id="qtd-total">0 pessoas</span>
   </div>
 
   <div class="add-area">
@@ -177,7 +174,7 @@
 
   <div id="listaPessoas"></div>
 
-  <!-- 💰 CAIXA · COMPRAS E DESCONTOS -->
+  <!-- 💰 CAIXA · COMPRAS -->
   <div class="caixa">
     <div class="caixa-titulo">
       <h2>Caixa · Material Comprado</h2>
@@ -187,7 +184,7 @@
     <div class="caixa-cards">
       <div class="card-valor">
         <div class="rotulo">Arrecadado</div>
-        <div class="v-bruto" id="val-bruto">R$ 2.600,00</div>
+        <div class="v-bruto" id="val-bruto">R$ 0,00</div>
       </div>
       <div class="card-valor">
         <div class="rotulo">Gasto / Comprado</div>
@@ -197,7 +194,7 @@
 
     <div class="caixa-liquido">
       <div class="rotulo">Disponível (Arrecadado − Gasto)</div>
-      <div class="valor" id="val-liquido">R$ 2.600,00</div>
+      <div class="valor" id="val-liquido">R$ 0,00</div>
     </div>
 
     <div class="despesa-inputs">
@@ -210,14 +207,17 @@
   </div>
 </div>
 
-<!-- 💾 BOTÕES DE SALVAR — FIXO EM BAIXO -->
+<!-- 💾 BOTÕES -->
 <div class="botoes-final">
   <button class="btn-salvar" onclick="baixarArquivo()">💾 Salvar / Baixar</button>
   <button class="btn-exportar" onclick="exportarDados()">📤 Backup</button>
 </div>
 
 <script>
-const VALOR_TOTAL = 2600;
+const VALOR_POR_PESSOA = 50;
+const META_POR_MES = 1800;
+const MESES = ['jun','jul','ago'];
+
 let pessoas = [];
 let despesas = [];
 
@@ -261,35 +261,64 @@ const baseDados = [
   {nome:"Zébedeu Pereira",jun:true,jul:true,ago:false,isento:false}
 ];
 
-// 💾 SALVAR / CARREGAR SOZINHO
 function carregarDados(){
   const s = localStorage.getItem('pessoas');
   const d = localStorage.getItem('despesas');
   pessoas = s ? JSON.parse(s) : [...baseDados];
   despesas = d ? JSON.parse(d) : [];
-  salvarDados(); montarLista(); montarDespesas(); atualizarContadores();
+  salvarDados(); montarLista(); montarDespesas(); atualizarTudo();
 }
 function salvarDados(){
   localStorage.setItem('pessoas', JSON.stringify(pessoas));
   localStorage.setItem('despesas', JSON.stringify(despesas));
 }
 
-// ✅ MARCAR / DESMARCAR
 window.marcarMes = function(i, mes){
   pessoas[i][mes] = !pessoas[i][mes];
-  salvarDados(); montarLista(); atualizarContadores();
+  salvarDados(); montarLista(); atualizarTudo();
 };
 
-// ✅ CONTADORES AUTOMÁTICOS
-function atualizarContadores(){
-  const total = pessoas.length;
-  document.getElementById('cont-jun').textContent = `${pessoas.filter(p=>p.jun).length} CONTRIBUÍRAM · ${total-pessoas.filter(p=>p.jun).length} FALTAM`;
-  document.getElementById('cont-jul').textContent = `${pessoas.filter(p=>p.jul).length} CONTRIBUÍRAM · ${total-pessoas.filter(p=>p.jul).length} FALTAM`;
-  document.getElementById('cont-ago').textContent = `${pessoas.filter(p=>p.ago).length} CONTRIBUÍRAM · ${total-pessoas.filter(p=>p.ago).length} FALTAM`;
-  document.getElementById('qtd-total').textContent = total + ' pessoas';
+function atualizarTudo(){
+  const totalPessoas = pessoas.length;
+  document.getElementById('qtd-total').textContent = totalPessoas + ' pessoas';
+
+  MESES.forEach(mes => {
+    const pagantes = pessoas.filter(p => p[mes] && !p.isento).length;
+    const isentos = pessoas.filter(p => p[mes] && p.isento).length;
+    const valor = pagantes * VALOR_POR_PESSOA;
+    const faltam = totalPessoas - pagantes - isentos;
+    const porcento = Math.min(100, Math.round((valor / META_POR_MES) * 100));
+    const faltaValor = Math.max(0, META_POR_MES - valor);
+
+    const barra = document.getElementById(`barra-${mes}`);
+    barra.style.height = porcento + '%';
+    barra.textContent = porcento + '%';
+
+    document.getElementById(`val-${mes}`).textContent = 'R$ ' + valor.toLocaleString('pt-BR');
+    document.getElementById(`meta-${mes}`).textContent = 
+      `META R$ ${META_POR_MES.toLocaleString('pt-BR')} · FALTAM R$ ${faltaValor.toLocaleString('pt-BR')}`;
+
+    let textoCont = `${pagantes} CONTRIBUÍRAM`;
+    if(isentos > 0) textoCont += ` · ${isentos} ISENTO${isentos>1?'S':''}`;
+    if(faltam > 0) textoCont += ` · ${faltam} FALTAM`;
+    document.getElementById(`cont-${mes}`).textContent = textoCont;
+  });
+
+  const totalArrecadado = MESES.reduce((s,mes) => {
+    const pag = pessoas.filter(p => p[mes] && !p.isento).length;
+    return s + (pag * VALOR_POR_PESSOA);
+  }, 0);
+  document.getElementById('total-geral').textContent = 
+    `TOTAL GERAL · R$ ${totalArrecadado.toLocaleString('pt-BR')} / R$ ${(META_POR_MES*3).toLocaleString('pt-BR')}`;
+
+  const gastoTotal = despesas.reduce((s,x) => s + x.valor, 0);
+  const liquido = totalArrecadado - gastoTotal;
+  document.getElementById('val-bruto').textContent = 'R$ ' + totalArrecadado.toFixed(2).replace('.',',');
+  document.getElementById('val-gasto').textContent = 'R$ ' + gastoTotal.toFixed(2).replace('.',',');
+  document.getElementById('val-liquido').textContent = 'R$ ' + liquido.toFixed(2).replace('.',',');
+  document.getElementById('qtd-itens').textContent = despesas.length + ' item' + (despesas.length!==1?'ens':'');
 }
 
-// ✅ LISTA DE PESSOAS
 function montarLista(){
   const div = document.getElementById('listaPessoas'); div.innerHTML = '';
   pessoas.forEach((p, i)=>{
@@ -300,7 +329,7 @@ function montarLista(){
       <div class="quadrado ${p.jun?'checado':''}" onclick="marcarMes(${i},'jun')">✓</div>
       <div class="quadrado ${p.jul?'checado':''}" onclick="marcarMes(${i},'jul')">✓</div>
       <div class="quadrado ${p.ago?'checado':''}" onclick="marcarMes(${i},'ago')">✓</div>
-      <div class="acoes"><button class="btn-excluir" onclick="pessoas.splice(${i},1);salvarDados();montarLista();atualizarContadores()">✕</button></div>
+      <div class="acoes"><button class="btn-excluir" onclick="pessoas.splice(${i},1);salvarDados();montarLista();atualizarTudo()">✕</button></div>
     `;
     div.appendChild(linha);
   });
@@ -310,18 +339,9 @@ window.adicionarPessoa = function(){
   const nome = document.getElementById('novoNome').value.trim();
   if(!nome) return alert('Digite o nome!');
   pessoas.push({nome,jun:false,jul:false,ago:false,isento:false});
-  document.getElementById('novoNome').value=''; salvarDados(); montarLista(); atualizarContadores();
+  document.getElementById('novoNome').value='';
+  salvarDados(); montarLista(); atualizarTudo();
 };
-
-// 🛒 COMPRAS / MATERIAL
-function atualizarValoresCaixa(){
-  const gastoTotal = despesas.reduce((s,x)=>s+x.valor, 0);
-  const liquido = VALOR_TOTAL - gastoTotal;
-  document.getElementById('val-bruto').textContent = 'R$ ' + VALOR_TOTAL.toFixed(2).replace('.',',');
-  document.getElementById('val-gasto').textContent = 'R$ ' + gastoTotal.toFixed(2).replace('.',',');
-  document.getElementById('val-liquido').textContent = 'R$ ' + liquido.toFixed(2).replace('.',',');
-  document.getElementById('qtd-itens').textContent = despesas.length + ' item' + (despesas.length!==1?'ens':'');
-}
 
 window.adicionarDespesa = function(){
   const nome = document.getElementById('itemNome').value.trim();
@@ -337,7 +357,7 @@ function montarDespesas(){
   const div = document.getElementById('listaDespesas');
   if(despesas.length===0){
     div.innerHTML = '<p class="sem">Nenhum material comprado ainda.</p>';
-    atualizarValoresCaixa(); return;
+    atualizarTudo(); return;
   }
   div.innerHTML = '';
   despesas.forEach((d,i)=>{
@@ -350,24 +370,21 @@ function montarDespesas(){
     `;
     div.appendChild(el);
   });
-  atualizarValoresCaixa();
+  atualizarTudo();
 }
 
-// ⬇️ BOTÃO SALVAR / BAIXAR
 window.baixarArquivo = function(){
-  alert('✅ Salvo! Os dados ficam guardados automaticamente.\n\n📤 Use o botão "Backup" para baixar um arquivo de segurança.');
+  alert('✅ Salvo automaticamente! Use o botão Backup para guardar cópia.');
 };
-
 window.exportarDados = function(){
   const tudo = {pessoas, despesas, data: new Date().toLocaleString('pt-BR')};
   const arq = document.createElement('a');
   arq.href = URL.createObjectURL(new Blob([JSON.stringify(tudo,null,2)], {type:'application/json'}));
   arq.download = 'sacrificio-2026-backup.json';
   arq.click();
-  alert('✅ Backup baixado com sucesso!');
+  alert('✅ Backup baixado!');
 };
 
-// 🚀 INICIAR
 carregarDados();
 </script>
 
