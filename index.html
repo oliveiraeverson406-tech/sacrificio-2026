@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -186,7 +188,7 @@ const BASE = [
   {nome:"Gemima Dutra",jun:false,jul:false,ago:false,isento:false},
   {nome:"Ianezza Oliveira",jun:false,jul:false,ago:false,isento:false},
   {nome:"Jander Salgado",jun:false,jul:false,ago:false,isento:false},
-  {nome:"Jairo Gomes",jun:true,jul:true,ago:true,isento:false,valorPersonalizado:165,obs:"contribui R$ 165"},
+  {nome:"Jairo Gomes",jun:true,jul:true,ago:true,isento:true,obs:"isento em dinheiro"},
   {nome:"Joana Souza",jun:true,jul:true,ago:false,isento:false},
   {nome:"Jonas de Araújo",jun:false,jul:false,ago:false,isento:false},
   {nome:"Jorge Carvalho",jun:true,jul:false,ago:false,isento:false},
@@ -203,28 +205,13 @@ const BASE = [
   {nome:"Pastor João Mesquita",jun:true,jul:false,ago:false,isento:false},
   {nome:"Pastora Silvia",jun:true,jul:false,ago:false,isento:false},
   {nome:"Perpétua Pereira",jun:false,jul:false,ago:false,isento:false},
-  {nome:"Poliana Pereira",jun:false,jul:false,ago:false,isento:false,valorPersonalizado:165,obs:"contribui R$ 165"},
+  {nome:"Poliana Pereira",jun:false,jul:false,ago:false,isento:true,obs:"isento em dinheiro"},
   {nome:"Rafael dos Santos",jun:true,jul:true,ago:true,isento:false},
   {nome:"Raifran Viana",jun:true,jul:true,ago:false,isento:false},
   {nome:"Sandra Regina",jun:true,jul:true,ago:true,isento:false},
   {nome:"Taiana Dutra",jun:false,jul:false,ago:false,isento:false},
   {nome:"Viviane Viana",jun:true,jul:true,ago:true,isento:false},
   {nome:"Zébedeu Pereira",jun:true,jul:true,ago:false,isento:false}
-];
-
-const COMPRAS_BASE = [
-  {nome:"Brita", valor:900.00},
-  {nome:"Carrinho de mão", valor:160.00},
-  {nome:"Compra de material", valor:1000.00},
-  {nome:"Despesas para tirada das tábuas", valor:23.00},
-  {nome:"Despesas para tirada das tábuas", valor:40.00},
-  {nome:"Diesel", valor:100.00},
-  {nome:"Frete do barco", valor:300.00},
-  {nome:"Mais", valor:50.00},
-  {nome:"Moisés", valor:300.00},
-  {nome:"Sacas", valor:96.00},
-  {nome:"Tijolos", valor:650.00},
-  {nome:"Transporte da madeiras", valor:180.00}
 ];
 
 let pessoas = [];
@@ -236,28 +223,16 @@ function ordenar(lista) {
   return lista.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
 }
 
-// ✅ Correções pontuais aplicadas mesmo em dados já salvos no navegador
-const CORRECOES = {
-  "Jairo Gomes": {isento:false, valorPersonalizado:165, obs:"contribui R$ 165"},
-  "Poliana Pereira": {isento:false, valorPersonalizado:165, obs:"contribui R$ 165"}
-};
-
-function aplicarCorrecoes(lista){
-  return lista.map(p => CORRECOES[p.nome] ? {...p, ...CORRECOES[p.nome]} : p);
-}
-
 function iniciar(){
   pessoas = ordenar([...BASE]);
-  compras = ordenarCompras([...COMPRAS_BASE]); // ✅ Compras fixas no código, não dependem só do navegador
   const salvo = localStorage.getItem('dadosSacrificio');
   if(salvo){
     try {
       const obj = JSON.parse(salvo);
       if(obj.pessoas && obj.pessoas.length > 0) pessoas = ordenar(obj.pessoas);
-      if(obj.compras && obj.compras.length > 0) compras = ordenarCompras(obj.compras); // ✅ Ordena compras também
+      if(obj.compras) compras = ordenarCompras(obj.compras); // ✅ Ordena compras também
     } catch(erro) {}
   }
-  pessoas = aplicarCorrecoes(pessoas); // ✅ Garante Jairo/Poliana corretos mesmo com dados antigos
   salvar();
   mostrarLista();
   mostrarCompras();
@@ -272,20 +247,15 @@ function salvar(){
   localStorage.setItem('dadosSacrificio', JSON.stringify({pessoas, compras}));
 }
 
-function valorDaPessoa(p){
-  return (typeof p.valorPersonalizado === 'number') ? p.valorPersonalizado : VALOR;
-}
-
 function atualizar(){
   document.getElementById('qtd').textContent = pessoas.length + ' pessoas';
   let totalArrec = 0;
   const totalPessoas = pessoas.length;
   
   MESES.forEach(mes => {
-    const pagantes = pessoas.filter(p => p[mes] && !p.isento);
-    const pag = pagantes.length;
+    const pag = pessoas.filter(p => p[mes] && !p.isento).length;
     const isentos = pessoas.filter(p => p[mes] && p.isento).length;
-    const valorMes = pagantes.reduce((soma, p) => soma + valorDaPessoa(p), 0);
+    const valorMes = pag * VALOR;
     totalArrec += valorMes;
     const pct = Math.min(100, Math.round((valorMes / META) * 100));
     const falta = META - valorMes;
