@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campanha 2026 — Sacrifício</title>
+  <style>
+    * {margin:0; padding:0; box-sizing:border-box; font-family: sans-serif;}
+    body {background:#F5F0E1; color:#333; padding-bottom:80px; font-size:16px;}
+    header {background:#3A2E24; color:white; padding:15px;}
+    h1 {font-size:22px; margin-bottom:5px;}
+    .status {font-size:12px; margin-top:6px; padding:4px 8px; border-radius:4px; display:inline-block;}
+    .status.online {background:#2f6b3a; color:white;}
+    .status.offline {background:#a83232; color:white;}
+    .barras {display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:10px;}
+    .barra-mes {text-align:center;}
+    .barra-fundo {background:#3A2E24; color:white; padding:8px; border-radius:8px 8px 0 0; height:60px; display:flex; align-items:flex-end; justify-content:center; position:relative; overflow:hidden;}
+    .barra-porcentagem {background:#C89B3C; width:100%; height:0; transition:0.3s; display:flex; align-items:center; justify-content:center; color:#000; font-weight:bold; font-size:14px; position:absolute; bottom:0; left:0;}
+    .cartoes {display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:10px;}
+    .cartao {background:white; padding:10px; border-radius:8px;}
+    .cartao h3 {font-size:14px; color:#666; margin-bottom:5px;}
+    .valor {font-size:20px; font-weight:bold;}
+    .cartao p {font-size:12px; color:#666; margin-top:4px; line-height:1.4;}
+    .total-geral {background:#406343; color:white; margin:10px; padding:12px; border-radius:8px; font-weight:bold; font-size:18px;}
+    .backup-area {margin:10px; padding:12px; background:#fff8e8; border:2px dashed #E8B864; border-radius:8px;}
+    .backup-area strong {display:block; margin-bottom:8px; color:#856404;}
+    .backup-botoes {display:flex; gap:8px; flex-wrap:wrap;}
+    button {padding:10px 12px; border:none; border-radius:6px; font-size:14px; font-weight:bold; cursor:pointer;}
+    .btn-exportar {background:#3A2E24; color:white;}
+    .btn-restaurar {background:#6c5ce7; color:white;}
+    .label-arquivo {background:white; border:1px solid #ddd; padding:10px; border-radius:6px; text-align:center; flex:2; min-width:140px; font-size:13px; cursor:pointer;}
+    .container {padding:10px;}
+    .titulo-lista {display:flex; justify-content:space-between; align-items:center; font-size:20px; font-weight:bold; margin-bottom:10px;}
+    .add-area {display:flex; gap:8px; margin-bottom:10px;}
+    .add-area input {flex:1; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:16px;}
+    button {background:#406343; color:white;}
+    .cab-tabela {display:grid; grid-template-columns:3fr 50px 50px 50px 40px; padding:8px; font-weight:bold; color:#444;}
+    .linha {display:grid; grid-template-columns:3fr 50px 50px 50px 40px; align-items:center; background:white; padding:8px; border-radius:6px; margin-bottom:5px; border:1px solid #E5DDCB;}
+    .linha.isento {background:#F0EBD8; color:#666;}
+    .nome {font-weight:bold;}
+    .sub {font-size:11px; color:#888; margin-top:2px;}
+    .quadrado {width:28px; height:28px; border:2px solid #D4C9AE; border-radius:4px; background:#F8F4E9; margin:0 auto; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:bold; color:transparent;}
+    .quadrado.checado {background:#C89B3C; border-color:#B0852F; color:white;}
+    .btn-excluir {background:none; color:#A83232; padding:0; font-size:18px;}
+    .caixa {margin-top:20px; padding-top:15px; border-top:2px dashed #C4B89C;}
+    .caixa-titulo {display:flex; justify-content:space-between; font-size:18px; font-weight:bold; margin-bottom:10px;}
+    .caixa-cards {display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;}
+    .card-valor {background:white; padding:10px; border-radius:8px;}
+    .rotulo {font-size:13px; color:#666; text-transform:uppercase;}
+    .v-bruto {font-size:22px; font-weight:bold;}
+    .v-gasto {font-size:22px; font-weight:bold; color:#A83232;}
+    .caixa-liquido {background:#3A2E24; color:white; padding:12px; border-radius:8px; margin:10px 0;}
+    .caixa-liquido .rotulo {color:#E8B864;}
+    .despesa-inputs {display:flex; flex-direction:column; gap:8px; margin:10px 0;}
+    .despesa-inputs input {padding:10px; border:1px solid #ddd; border-radius:6px; font-size:16px;}
+    .item-desp {display:grid; grid-template-columns:3fr 1fr auto; gap:8px; background:white; padding:8px; border-radius:6px; margin-bottom:5px; align-items:center;}
+    .v {font-weight:bold; text-align:right;}
+    .sem {text-align:center; color:#999; padding:15px;}
+    .botoes-final {position:fixed; bottom:0; left:0; right:0; background:white; padding:10px; border-top:2px solid #ddd; display:flex; gap:10px;}
+    .botoes-final button {flex:1;}
+    #arquivoBackup {display:none;}
+    #btnRest:disabled {opacity:0.5; cursor:not-allowed;}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Sacrifício</h1>
+  <p>Pró-escada de entrada · R$ 50 por mês</p>
+  <span class="status offline" id="statusNuvem">Conectando...</span>
+</header>
+
+<div class="barras">
+  <div class="barra-mes">
+    <div class="barra-fundo">
+      JUNHO
+      <div class="barra-porcentagem" id="barra-jun">0%</div>
+    </div>
+  </div>
+  <div class="barra-mes">
+    <div class="barra-fundo">
+      JULHO
+      <div class="barra-porcentagem" id="barra-jul">0%</div>
+    </div>
+  </div>
+  <div class="barra-mes">
+    <div class="barra-fundo">
+      AGOSTO
+      <div class="barra-porcentagem" id="barra-ago">0%</div>
+    </div>
+  </div>
+</div>
+
+<div class="cartoes">
+  <div class="cartao">
+    <h3>JUNHO</h3>
+    <div class="valor" id="val-jun">R$ 0</div>
+    <p id="meta-jun">META R$ 1.800 · FALTAM R$ 1.800</p>
+    <p id="cont-jun">0 CONTRIBUÍRAM · 0 FALTAM</p>
+  </div>
+  <div class="cartao">
+    <h3>JULHO</h3>
+    <div class="valor" id="val-jul">R$ 0</div>
+    <p id="meta-jul">META R$ 1.800 · FALTAM R$ 1.800</p>
+    <p id="cont-jul">0 CONTRIBUÍRAM · 0 FALTAM</p>
+  </div>
+  <div class="cartao">
+    <h3>AGOSTO</h3>
+    <div class="valor" id="val-ago">R$ 0</div>
+    <p id="meta-ago">META R$ 1.800 · FALTAM R$ 1.800</p>
+    <p id="cont-ago">0 CONTRIBUÍRAM · 0 FALTAM</p>
+  </div>
+</div>
+
+<div class="total-geral" id="total-geral">TOTAL GERAL · R$ 0 / R$ 5.400</div>
+
+<div class="backup-area">
+  <strong>💾 SALVAR E RECUPERAR (backup extra, além da nuvem)</strong>
+  <div class="backup-botoes">
+    <button class="btn-exportar" onclick="exportarDados()">📤 Baixar Backup</button>
+    <input type="file" id="arquivoBackup" accept=".json" onchange="selecionouArquivo(this)">
+    <label for="arquivoBackup" class="label-arquivo" id="nomeArquivo">📂 Escolher arquivo...</label>
+    <button class="btn-restaurar" onclick="restaurarBackup()" id="btnRest" disabled>📥 Restaurar</button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="titulo-lista">
+    <span>Contribuintes</span>
+    <span id="qtd">0 pessoas</span>
+  </div>
+  <div class="add-area">
+    <input type="text" id="nomeNovo" placeholder="Nome do contribuinte">
+    <button onclick="adicionar()">Adicionar</button>
+  </div>
+  <div class="cab-tabela">
+    <span>NOME</span><span>JUN</span><span>JUL</span><span>AGO</span><span></span>
+  </div>
+  <div id="lista"></div>
+
+  <div class="caixa">
+    <div class="caixa-titulo">
+      <span>Caixa · Material Comprado</span>
+      <span id="qtdItens">0 itens</span>
+    </div>
+    <div class="caixa-cards">
+      <div class="card-valor">
+        <div class="rotulo">Arrecadado</div>
+        <div class="v-bruto" id="arrec">R$ 0,00</div>
+      </div>
+      <div class="card-valor">
+        <div class="rotulo">Gasto / Comprado</div>
+        <div class="v-gasto" id="gasto">R$ 0,00</div>
+      </div>
+    </div>
+    <div class="caixa-liquido">
+      <div class="rotulo">Disponível (Arrecadado − Gasto)</div>
+      <div class="valor" id="saldo">R$ 0,00</div>
+    </div>
+    <div class="despesa-inputs">
+      <input type="text" id="nomeCompra" placeholder="Nome do material / item comprado">
+      <input type="number" step="0.01" id="valorCompra" placeholder="Valor R$">
+      <button onclick="addCompra()">+ Adicionar Compra</button>
+    </div>
+    <div id="listaCompras"></div>
+  </div>
+</div>
+
+<div class="botoes-final">
+  <button onclick="exportarDados()">📤 Backup</button>
+</div>
+
+<script type="module">
+// ===================== FIREBASE / FIRESTORE =====================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  initializeFirestore,
+  doc,
+  onSnapshot,
+  setDoc,
+  persistentLocalCache,
+  persistentSingleTabManager
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 👉 COLE AQUI a configuração do seu projeto Firebase (Configurações do projeto > Seus apps > SDK config)
+const firebaseConfig = {
+  apiKey: "AIzaSyDa40Ow1CEEIily76vu_GHpXHeG_xjtOX4",
+  authDomain: "sacrificio-2026.firebaseapp.com",
+  projectId: "sacrificio-2026",
+  storageBucket: "sacrificio-2026.firebasestorage.app",
+  messagingSenderId: "859866366570",
+  appId: "1:859866366570:web:583cff9dad2b268a994013"
+};
+
+const app = initializeApp(firebaseConfig);
+// persistência offline: guarda cache local em IndexedDB e sincroniza quando a internet voltar
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentSingleTabManager() })
+});
+const docRef = doc(db, "sacrificio", "dados2026");
+
+const VALOR = 50;
+const META = 1800;
+const MESES = ['jun','jul','ago'];
+
+// dados base usados só se o documento no Firestore ainda não existir (primeira vez)
+const BASE = [
+  {nome:"Alfredo de Souza",jun:false,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Amanda de Souza",jun:false,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Benedito Gama",jun:true,jul:true,ago:false,isento:false,valor:VALOR},
+  {nome:"Celma Dutra",jun:true,jul:true,ago:false,isento:false,valor:VALOR},
+  {nome:"Cléo Nogueira",jun:false,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Daniele Ferreira",jun:false,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Dariane Carneiro",jun:true,jul:true,ago:false,isento:false,valor:VALOR},
+  {nome:"Durvalina Gomes",jun:true,jul:true,ago:false,isento:false,valor:VALOR},
+  {nome:"Edina dos Reis",jun:true,jul:true,ago:true,isento:false,valor:VALOR},
+  {nome:"Elzer Gama",jun:true,jul:true,ago:false,isento:false,valor:VALOR},
+  {nome:"Everson Oliveira",jun:false,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Gemima Dutra",jun:false,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Ianezza Oliveira",jun:false,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Jander Salgado",jun:false,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Jairo Gomes",jun:true,jul:true,ago:true,isento:false,valor:165},
+  {nome:"Joana Souza",jun:true,jul:true,ago:false,isento:false,valor:VALOR},
+  {nome:"Jonas de Araújo",jun:false,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Jorge Carvalho",jun:true,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Jorgiana Gomes",jun:true,jul:true,ago:false,isento:false,valor:VALOR},
+  {nome:"José Neto Brandão",jun:false,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Juracy Rodrigues",jun:true,jul:true,ago:false,isento:false,valor:VALOR},
+  {nome:"Kethlen dos Santos",jun:true,jul:true,ago:false,isento:false,valor:VALOR},
+  {nome:"Laís Souza Pereira",jun:true,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Lucas Gomes",jun:true,jul:true,ago:true,isento:false,valor:VALOR},
+  {nome:"Lurdeth Prisco",jun:true,jul:true,ago:false,isento:false,valor:VALOR},
+  {nome:"Maria do Socorro",jun:false,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Mario Pinheiro",jun:true,jul:true,ago:true,isento:false,valor:VALOR},
+  {nome:"Noele Belém",jun:true,jul:true,ago:true,isento:false,valor:VALOR},
+  {nome:"Pastor João Mesquita",jun:true,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Pastora Silvia",jun:true,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Perpétua Pereira",jun:false,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Poliana Pereira",jun:false,jul:false,ago:false,isento:false,valor:165},
+  {nome:"Rafael dos Santos",jun:true,jul:true,ago:true,isento:false,valor:VALOR},
+  {nome:"Raifran Viana",jun:true,jul:true,ago:false,isento:false,valor:VALOR},
+  {nome:"Sandra Regina",jun:true,jul:true,ago:true,isento:false,valor:VALOR},
+  {nome:"Taiana Dutra",jun:false,jul:false,ago:false,isento:false,valor:VALOR},
+  {nome:"Viviane Viana",jun:true,jul:true,ago:true,isento:false,valor:VALOR},
+  {nome:"Zébedeu Pereira",jun:true,jul:true,ago:false,isento:false,valor:VALOR}
+];
+
+// itens de material comprado perdidos e reconstruídos, usados só na primeira carga
+const COMPRAS_BASE = [
+  {nome:"Brita", valor:900},
+  {nome:"Carrinho de mão", valor:160},
+  {nome:"Compra de material", valor:1000},
+  {nome:"Despesas para tirada das tábuas", valor:23},
+  {nome:"Despesas para tirada das tábuas", valor:40},
+  {nome:"Diesel", valor:100},
+  {nome:"Frete do barco", valor:300},
+  {nome:"Mais", valor:50},
+  {nome:"Moisés", valor:300},
+  {nome:"Sacas", valor:96},
+  {nome:"Tijolos", valor:650},
+  {nome:"Transporte da madeiras", valor:180}
+];
+
+let pessoas = [];
+let compras = [];
+let arquivoEscolhido = null;
+let primeiraCarga = true;
+
+function ordenar(lista){ return lista.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')); }
+function ordenarCompras(lista){ return lista.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')); }
+function valorDe(p){ return p.isento ? 0 : (p.valor || VALOR); }
+
+const statusEl = document.getElementById('statusNuvem');
+function marcarStatus(txt, ok){
+  statusEl.textContent = txt;
+  statusEl.className = 'status ' + (ok ? 'online' : 'offline');
+}
+window.addEventListener('online', ()=>marcarStatus('Online · sincronizado', true));
+window.addEventListener('offline', ()=>marcarStatus('Offline · salvando localmente', false));
+
+onSnapshot(docRef, (snap) => {
+  if (snap.exists()) {
+    const obj = snap.data();
+    pessoas = ordenar(obj.pessoas && obj.pessoas.length ? obj.pessoas : [...BASE]);
+    compras = ordenarCompras(obj.compras || []);
+  } else if (primeiraCarga) {
+    // documento ainda não existe: sobe os dados iniciais (contribuintes + compras reconstruídas)
+    pessoas = ordenar([...BASE]);
+    compras = ordenarCompras([...COMPRAS_BASE]);
+    salvarNuvem();
+  }
+  primeiraCarga = false;
+  marcarStatus(navigator.onLine ? 'Online · sincronizado' : 'Offline · dados do cache', navigator.onLine);
+  mostrarLista();
+  mostrarCompras();
+  atualizar();
+}, (erro) => {
+  marcarStatus('Erro de conexão · usando cache', false);
+});
+
+function salvarNuvem(){
+  setDoc(docRef, { pessoas, compras }, { merge:false }).catch(()=>{
+    // se falhar (ex: sem config Firebase preenchida), os dados continuam só na memória/cache local
+  });
+}
+
+function atualizar(){
+  document.getElementById('qtd').textContent = pessoas.length + ' pessoas';
+  let totalArrec = 0;
+  const totalPessoas = pessoas.length;
+
+  MESES.forEach(mes => {
+    const pagantesCash = pessoas.filter(p => p[mes] && !p.isento);
+    const isentos = pessoas.filter(p => p[mes] && p.isento).length;
+    const valorMes = pagantesCash.reduce((s,p)=> s + valorDe(p), 0);
+    totalArrec += valorMes;
+    const pct = Math.min(100, Math.round((valorMes / META) * 100));
+    const falta = META - valorMes;
+    const faltamPessoas = totalPessoas - pagantesCash.length - isentos;
+
+    const barra = document.getElementById(`barra-${mes}`);
+    barra.style.height = pct + '%';
+    barra.textContent = pct + '%';
+
+    document.getElementById(`val-${mes}`).textContent = 'R$ ' + valorMes.toLocaleString('pt-BR');
+    document.getElementById(`meta-${mes}`).textContent = `META R$ ${META.toLocaleString('pt-BR')} · FALTAM R$ ${Math.max(0,falta).toLocaleString('pt-BR')}`;
+
+    let texto = `${pagantesCash.length} CONTRIBUÍRAM`;
+    if(isentos > 0) texto += ` · ${isentos} ISENTO${isentos>1?'S':''}`;
+    texto += ` · ${faltamPessoas} FALTAM`;
+    document.getElementById(`cont-${mes}`).textContent = texto;
+  });
+
+  const gastoTotal = compras.reduce((s,x) => s + x.valor, 0);
+  document.getElementById('total-geral').textContent = `TOTAL GERAL · R$ ${totalArrec.toLocaleString('pt-BR')} / R$ ${(META*3).toLocaleString('pt-BR')}`;
+  document.getElementById('arrec').textContent = 'R$ ' + totalArrec.toFixed(2).replace('.',',');
+  document.getElementById('gasto').textContent = 'R$ ' + gastoTotal.toFixed(2).replace('.',',');
+  document.getElementById('saldo').textContent = 'R$ ' + (totalArrec - gastoTotal).toFixed(2).replace('.',',');
+  document.getElementById('qtdItens').textContent = compras.length + ' item' + (compras.length!==1?'ens':'');
+}
+
+function mostrarLista(){
+  ordenar(pessoas);
+  const div = document.getElementById('lista');
+  div.innerHTML = '';
+  pessoas.forEach((p,i) => {
+    const linha = document.createElement('div');
+    linha.className = `linha ${p.isento?'isento':''}`;
+    linha.innerHTML = `
+      <div><div class="nome">${p.nome}</div>${p.obs?`<div class="sub">${p.obs}</div>`:''}</div>
+      <div class="quadrado ${p.jun?'checado':''}" onclick="marcar(${i},'jun')">✓</div>
+      <div class="quadrado ${p.jul?'checado':''}" onclick="marcar(${i},'jul')">✓</div>
+      <div class="quadrado ${p.ago?'checado':''}" onclick="marcar(${i},'ago')">✓</div>
+      <button class="btn-excluir" onclick="excluir(${i})">✕</button>
+    `;
+    div.appendChild(linha);
+  });
+}
+
+window.marcar = function(i, mes){
+  pessoas[i][mes] = !pessoas[i][mes];
+  salvarNuvem(); mostrarLista(); atualizar();
+};
+
+window.excluir = function(i){
+  if(confirm('Excluir ' + pessoas[i].nome + '?')){
+    pessoas.splice(i,1);
+    salvarNuvem(); mostrarLista(); atualizar();
+  }
+};
+
+window.adicionar = function(){
+  const nome = document.getElementById('nomeNovo').value.trim();
+  if(!nome) return alert('Digite o nome!');
+  pessoas.push({nome,jun:false,jul:false,ago:false,isento:false,valor:VALOR});
+  document.getElementById('nomeNovo').value='';
+  salvarNuvem(); mostrarLista(); atualizar();
+};
+
+function mostrarCompras(){
+  compras = ordenarCompras(compras);
+  const div = document.getElementById('listaCompras');
+  if(compras.length===0){
+    div.innerHTML = '<p class="sem">Nenhum material comprado ainda.</p>';
+    atualizar(); return;
+  }
+  div.innerHTML = '';
+  compras.forEach((c,i) => {
+    const el = document.createElement('div');
+    el.className = 'item-desp';
+    el.innerHTML = `<span>${c.nome}</span><span class="v">R$ ${c.valor.toFixed(2).replace('.',',')}</span><button class="btn-excluir" onclick="excluirCompra(${i})">✕</button>`;
+    div.appendChild(el);
+  });
+  atualizar();
+}
+
+window.addCompra = function(){
+  const nome = document.getElementById('nomeCompra').value.trim();
+  const valor = parseFloat(document.getElementById('valorCompra').value);
+  if(!nome) return alert('Digite o nome do material!');
+  if(isNaN(valor) || valor <= 0) return alert('Valor inválido!');
+  compras.push({nome, valor});
+  compras = ordenarCompras(compras);
+  document.getElementById('nomeCompra').value='';
+  document.getElementById('valorCompra').value='';
+  salvarNuvem(); mostrarCompras();
+};
+
+window.excluirCompra = function(i){
+  compras.splice(i,1);
+  salvarNuvem(); mostrarCompras();
+};
+
+window.exportarDados = function(){
+  const dados = {pessoas, compras, data: new Date().toLocaleString('pt-BR')};
+  const blob = new Blob([JSON.stringify(dados,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'sacrificio-2026-backup.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  alert('✅ Backup baixado! Guarde bem!');
+};
+
+window.selecionouArquivo = function(input){
+  if(input.files.length > 0){
+    arquivoEscolhido = input.files[0];
+    document.getElementById('nomeArquivo').textContent = '✅ ' + arquivoEscolhido.name;
+    document.getElementById('btnRest').disabled = false;
+  }
+};
+
+window.restaurarBackup = function(){
+  if(!arquivoEscolhido) return alert('Escolha um arquivo!');
+  if(!confirm('⚠️ Vai SUBSTITUIR todos os dados atuais (na nuvem também)?')) return;
+  const leitor = new FileReader();
+  leitor.onload = function(e){
+    try {
+      const obj = JSON.parse(e.target.result);
+      if(!obj.pessoas) throw new Error('Formato inválido');
+      pessoas = ordenar(obj.pessoas);
+      compras = ordenarCompras(obj.compras || []);
+      salvarNuvem(); mostrarLista(); mostrarCompras(); alert('✅ Restaurado com sucesso!');
+      arquivoEscolhido = null;
+      document.getElementById('nomeArquivo').textContent = '📂 Escolher arquivo...';
+      document.getElementById('btnRest').disabled = true;
+    } catch(erro) { alert('❌ Arquivo inválido!'); }
+  };
+  leitor.readAsText(arquivoEscolhido);
+};
+
+// ===================== SERVICE WORKER (app funcionar offline) =====================
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script>
+
+</body>
+</html>
