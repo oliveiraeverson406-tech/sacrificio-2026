@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sacrificio-cache-v1';
+const CACHE_NAME = 'sacrificio-cache-v2';
 const URLS_PARA_CACHEAR = [
   './',
   './index.html',
